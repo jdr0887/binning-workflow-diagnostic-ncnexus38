@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn">
+
+  <process id="ncnexus_diagnostic_binning" name="NCNEXUSDiagnosticBinning">
+
+    <startEvent id="start" />
+    <serviceTask id="initialize" activiti:class="org.renci.binning.core.diagnostic.InitializeDelegate" />
+    <serviceTask id="loadVCF" activiti:class="org.renci.binning.diagnostic.ncnexus.executor.LoadVCFDelegate" />
+    <serviceTask id="loadCoverage" activiti:class="org.renci.binning.diagnostic.ncnexus.executor.LoadCoverageDelegate" />
+    <serviceTask id="annotateVariants" activiti:class="org.renci.binning.diagnostic.ncnexus.executor.AnnotateVariantsDelegate" />
+    <serviceTask id="updateFrequencies" activiti:class="org.renci.binning.diagnostic.ncnexus.executor.UpdateFrequenciesDelegate" />
+    <serviceTask id="updateDiagnosticBins" activiti:class="org.renci.binning.diagnostic.ncnexus.executor.UpdateDiagnosticBinsDelegate" />
+    <serviceTask id="generateReport" activiti:class="org.renci.binning.diagnostic.ncnexus.executor.GenerateReportDelegate" />
+    <serviceTask id="finalize" activiti:class="org.renci.binning.core.diagnostic.FinalizeDelegate" />
+    <endEvent id="end" />
+
+    <sequenceFlow sourceRef="start" targetRef="initialize" />
+    <sequenceFlow sourceRef="initialize" targetRef="loadVCF" />
+    <sequenceFlow sourceRef="loadVCF" targetRef="loadCoverage" />
+    <sequenceFlow sourceRef="loadCoverage" targetRef="annotateVariants" />
+    <sequenceFlow sourceRef="annotateVariants" targetRef="updateFrequencies" />
+    <sequenceFlow sourceRef="updateFrequencies" targetRef="updateDiagnosticBins" />
+    <sequenceFlow sourceRef="updateDiagnosticBins" targetRef="generateReport" />
+    <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
+    <sequenceFlow sourceRef="finalize" targetRef="end" />
+
+  </process>
+
+</definitions>

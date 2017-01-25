@@ -1,0 +1,15 @@
+<features name="diagnostic-ncnexus-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+
+  <feature name="diagnostic-ncnexus" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:org.renci.binning.workflows.diagnostic-ncnexus/diagnostic-ncnexus-commons/${project.version}</bundle>
+    <bundle>mvn:org.renci.binning.workflows.diagnostic-ncnexus/diagnostic-ncnexus-commands/${project.version}</bundle>    
+    <bundle>mvn:org.renci.binning.workflows.diagnostic-ncnexus/diagnostic-ncnexus-executor/${project.version}</bundle>
+    <bundle>mvn:org.renci.binning.workflows.diagnostic-ncnexus/diagnostic-ncnexus-ws/${project.version}</bundle>
+  </feature>
+
+</features>
+
+
+
+
+
