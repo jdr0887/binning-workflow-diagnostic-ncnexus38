@@ -37,7 +37,7 @@ public class ListJobsAction implements Action {
         logger.debug("ENTERING execute()");
 
         DiagnosticBinningJob example = new DiagnosticBinningJob();
-        example.setStudy("GS");
+        example.setStudy("NCNEXUS38");
         if (dxId != null) {
             example.setDx(binningDAOBeanService.getDXDAO().findById(dxId));
         }

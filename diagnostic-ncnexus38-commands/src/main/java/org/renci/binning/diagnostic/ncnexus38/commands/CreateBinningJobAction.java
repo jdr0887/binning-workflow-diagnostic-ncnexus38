@@ -50,7 +50,7 @@ public class CreateBinningJobAction implements Action {
 
         DiagnosticBinningJob binningJob = new DiagnosticBinningJob();
 
-        binningJob.setStudy("GS");
+        binningJob.setStudy("NCNEXUS38");
         binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Requested"));
 
         binningJob.setGender(gender);
