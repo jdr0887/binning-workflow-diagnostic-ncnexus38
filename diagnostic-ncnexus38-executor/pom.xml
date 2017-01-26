@@ -24,8 +24,8 @@
 	<extensions>true</extensions>
         <configuration>
           <instructions>
-            <Private-Package>org.renci.binning.diagnostic.ncnexus.executor.*</Private-Package>
-            <Export-Package>org.renci.binning.diagnostic.ncnexus.executor*</Export-Package>
+            <Private-Package>org.renci.binning.diagnostic.ncnexus38.executor.*</Private-Package>
+            <Export-Package>org.renci.binning.diagnostic.ncnexus38.executor*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

@@ -43,8 +43,8 @@
 	  <instructions>
 	    <Private-Package />
 	    <Import-Package>*</Import-Package>	    
-	    <Export-Package>org.renci.binning.diagnostic.ncnexus.commands.*</Export-Package>
-            <Karaf-Commands>org.renci.binning.diagnostic.ncnexus.commands.*</Karaf-Commands>
+	    <Export-Package>org.renci.binning.diagnostic.ncnexus38.commands.*</Export-Package>
+            <Karaf-Commands>org.renci.binning.diagnostic.ncnexus38.commands.*</Karaf-Commands>
 	  </instructions>
 	</configuration>
       </plugin>

@@ -89,8 +89,8 @@
 	<extensions>true</extensions>
         <configuration>
           <instructions>
-            <Private-Package>org.renci.binning.diagnostic.ncnexus.ws.*</Private-Package>
-            <Export-Package>org.renci.binning.diagnostic.ncnexus.ws*</Export-Package>
+            <Private-Package>org.renci.binning.diagnostic.ncnexus38.ws.*</Private-Package>
+            <Export-Package>org.renci.binning.diagnostic.ncnexus38.ws*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
