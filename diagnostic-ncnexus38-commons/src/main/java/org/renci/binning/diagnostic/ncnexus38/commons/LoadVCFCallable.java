@@ -92,7 +92,7 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
         avuMap.put("MaPSeqWorkflowName", "NCNEXUS38DX");
         avuMap.put("MaPSeqJobName", "FilterVariant");
         avuMap.put("MaPSeqMimeType", "TEXT_VCF");
-        String irodsFile = IRODSUtils.findFile(participant, avuMap);
+        String irodsFile = IRODSUtils.findFile(avuMap);
         String participantDir = String.format("%s/annotation/NCNEXUS38/%s", binningDirectory, participant);
         File vcfFile = IRODSUtils.getFile(irodsFile, participantDir);
         return vcfFile;
