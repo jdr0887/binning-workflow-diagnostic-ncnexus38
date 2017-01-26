@@ -46,11 +46,12 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
     @Override
     public File getDepthFile(String participant, Integer listVersion) throws BinningException {
         Map<String, String> avuMap = new HashMap<String, String>();
-        avuMap.put("MaPSeqStudyName", "NCNEXUS");
-        avuMap.put("MaPSeqWorkflowName", "NCNEXUSVariantCalling");
+        avuMap.put("ParticipantId", participant);
+        avuMap.put("MaPSeqStudyName", "NCNEXUS38");
+        avuMap.put("MaPSeqWorkflowName", "NCNEXUS38VariantCalling");
         avuMap.put("MaPSeqJobName", "SAMToolsDepth");
         avuMap.put("MaPSeqMimeType", "TEXT_PLAIN");
-        String irodsFile = IRODSUtils.findFile(participant, avuMap, ".depth.txt");
+        String irodsFile = IRODSUtils.findFile(avuMap, ".depth.txt");
         logger.info("irodsFile = {}", irodsFile);
         File depthFile = IRODSUtils.getFile(irodsFile, String.format("%s/Intervals", binningDirectory));
         logger.info("depth file: {}", depthFile.getAbsolutePath());
