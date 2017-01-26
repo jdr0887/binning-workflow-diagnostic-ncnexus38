@@ -2,13 +2,13 @@
   <parent>
     <groupId>org.renci.binning.workflows</groupId>
     <artifactId>diagnostic-ncnexus38</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
   <name>Binning :: Workflow :: Diagnostic NCNEXUS38 :: Executor</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.renci.binning.workflows.diagnostic-ncnexus38</groupId>
   <artifactId>diagnostic-ncnexus38-executor</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
