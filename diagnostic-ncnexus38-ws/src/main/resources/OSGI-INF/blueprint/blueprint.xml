@@ -12,14 +12,14 @@
   <reference id="binningDAOBeanService" interface="org.renci.binning.dao.BinningDAOBeanService" />
   <reference id="binningExecutorService" interface="org.renci.binning.core.BinningExecutorService" />
 
-  <bean id="diagnosticNCNEXUSImpl" class="org.renci.binning.diagnostic.ncnexus.ws.DiagnosticNCNEXUSServiceImpl">
+  <bean id="diagnosticNCNEXUS38Impl" class="org.renci.binning.diagnostic.ncnexus38.ws.DiagnosticNCNEXUS38ServiceImpl">
     <property name="binningDAOBeanService" ref="binningDAOBeanService" />
     <property name="binningExecutorService" ref="binningExecutorService" />
   </bean>
 
-  <jaxrs:server id="DiagnosticNCNEXUSServiceRS" address="/DiagnosticNCNEXUS">
+  <jaxrs:server id="DiagnosticNCNEXUS38ServiceRS" address="/DiagnosticNCNEXUS38">
     <jaxrs:serviceBeans>
-      <ref component-id="diagnosticNCNEXUSImpl" />
+      <ref component-id="diagnosticNCNEXUS38Impl" />
     </jaxrs:serviceBeans>
     <jaxrs:extensionMappings>
       <entry key="text" value="text/xml" />
