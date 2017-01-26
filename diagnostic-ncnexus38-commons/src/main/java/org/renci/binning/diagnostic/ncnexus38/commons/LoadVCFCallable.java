@@ -37,7 +37,7 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
 
     @Override
     public String getLabName() {
-        return "NCNEXUS";
+        return "NCNEXUS38";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
 
     @Override
     public String getStudyName() {
-        return "NCNEXUS";
+        return "NCNEXUS38";
     }
 
     @Override
@@ -88,12 +88,12 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
     public File getVCF(String participant) throws BinningException {
         logger.debug("ENTERING getVCF(String)");
         Map<String, String> avuMap = new HashMap<String, String>();
-        avuMap.put("MaPSeqStudyName", "NCNEXUS");
-        avuMap.put("MaPSeqWorkflowName", "NCNEXUSVariantCalling");
+        avuMap.put("MaPSeqStudyName", "NCNEXUS38");
+        avuMap.put("MaPSeqWorkflowName", "NCNEXUS38VariantCalling");
         avuMap.put("MaPSeqJobName", "GATKVariantAnnotator");
         avuMap.put("MaPSeqMimeType", "TEXT_VCF");
         String irodsFile = IRODSUtils.findFile(participant, avuMap);
-        String participantDir = String.format("%s/annotation/NCNEXUS/%s", binningDirectory, participant);
+        String participantDir = String.format("%s/annotation/NCNEXUS38/%s", binningDirectory, participant);
         File vcfFile = IRODSUtils.getFile(irodsFile, participantDir);
         return vcfFile;
     }
