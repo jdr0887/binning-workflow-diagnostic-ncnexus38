@@ -1,7 +1,5 @@
 package org.renci.binning.diagnostic.ncnexus38.executor;
 
-import static org.renci.binning.core.Constants.BINNING_HOME;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,15 +40,11 @@ public class DiagnosticNCNEXUS38Task implements Runnable {
             ServiceReference<RuntimeService> runtimeServiceReference = bundleContext.getServiceReference(RuntimeService.class);
             RuntimeService runtimeService = bundleContext.getService(runtimeServiceReference);
 
-            repositoryService.createDeployment().addClasspathResource("org/renci/binning/diagnostic/ncnexus38/executor/ncnexus38.bpmn20.xml").deploy();
+            repositoryService.createDeployment()
+                    .addClasspathResource("org/renci/binning/diagnostic/ncnexus38/executor/ncnexus38.bpmn20.xml").deploy();
 
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("binningJobId", binningJobId);
-            variables.put("irods.home", "/projects/mapseq/apps/irods-4.2.0/icommands");
-            // variables.put("process.data.dir", "/opt/Bin2/process_data");
-
-            String binningHome = System.getenv(BINNING_HOME);
-            variables.put(BINNING_HOME, binningHome);
 
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ncnexus38_diagnostic_binning", variables);
 

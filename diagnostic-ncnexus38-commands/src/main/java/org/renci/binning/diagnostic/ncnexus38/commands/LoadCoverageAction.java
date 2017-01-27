@@ -1,7 +1,5 @@
 package org.renci.binning.diagnostic.ncnexus38.commands;
 
-import static org.renci.binning.core.Constants.BINNING_HOME;
-
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,10 +45,8 @@ public class LoadCoverageAction implements Action {
             binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Coverage loading"));
             binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
-            String binningHome = System.getenv(BINNING_HOME);
-
             ExecutorService es = Executors.newSingleThreadExecutor();
-            es.submit(new LoadCoverageCallable(binningDAOBeanService, binningJob, binningHome));
+            es.submit(new LoadCoverageCallable(binningDAOBeanService, binningJob));
             es.shutdown();
             es.awaitTermination(1L, TimeUnit.DAYS);
 

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +31,13 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadCoverageCallable.class);
 
-    private String binningDirectory;
-
-    public LoadCoverageCallable(BinningDAOBeanService daoBean, DiagnosticBinningJob binningJob, String binningDirectory) {
+    public LoadCoverageCallable(BinningDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
         super(daoBean, binningJob);
-        this.binningDirectory = binningDirectory;
     }
 
     @Override
     public File getAllIntervalsFile(Integer listVersion) {
-        File allIntervalsFile = new File(String.format("%s/Intervals/allintervals.v%d.txt", binningDirectory, listVersion));
+        File allIntervalsFile = new File(String.format("$BINNING_INTERVALS_HOME/NCNEXUS38/allintervals.v%d.txt", listVersion));
         logger.info("all intervals file: {}", allIntervalsFile.getAbsolutePath());
         return allIntervalsFile;
     }
@@ -53,9 +52,11 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
         avuMap.put("MaPSeqMimeType", "TEXT_PLAIN");
         String irodsFile = IRODSUtils.findFile(avuMap, ".depth.txt");
         logger.info("irodsFile = {}", irodsFile);
-        File depthFile = IRODSUtils.getFile(irodsFile, String.format("%s/Intervals", binningDirectory));
-        logger.info("depth file: {}", depthFile.getAbsolutePath());
-        return null;
+        Path participantPath = Paths.get(System.getProperty("karaf.data"), "tmp", "GS", participant);
+        participantPath.toFile().mkdirs();
+        File depthFile = IRODSUtils.getFile(irodsFile, participantPath.toString());
+        logger.info("depthFile: {}", depthFile.getAbsolutePath());
+        return depthFile;
     }
 
     @Override
@@ -135,7 +136,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
         try {
             BinningDAOManager daoMgr = BinningDAOManager.getInstance();
             DiagnosticBinningJob binningJob = daoMgr.getDAOBean().getDiagnosticBinningJobDAO().findById(4218);
-            LoadCoverageCallable callable = new LoadCoverageCallable(daoMgr.getDAOBean(), binningJob, "/tmp");
+            LoadCoverageCallable callable = new LoadCoverageCallable(daoMgr.getDAOBean(), binningJob);
             callable.call();
         } catch (BinningDAOException | BinningException e) {
             e.printStackTrace();

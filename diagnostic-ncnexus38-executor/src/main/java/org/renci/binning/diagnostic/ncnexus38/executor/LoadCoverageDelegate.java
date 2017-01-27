@@ -1,7 +1,5 @@
 package org.renci.binning.diagnostic.ncnexus38.executor;
 
-import static org.renci.binning.core.Constants.BINNING_HOME;
-
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -48,8 +46,7 @@ public class LoadCoverageDelegate implements JavaDelegate {
             daoBean.getDiagnosticBinningJobDAO().save(binningJob);
             logger.info(binningJob.toString());
 
-            Executors.newSingleThreadExecutor()
-                    .submit(new LoadCoverageCallable(daoBean, binningJob, variables.get(BINNING_HOME).toString())).get();
+            Executors.newSingleThreadExecutor().submit(new LoadCoverageCallable(daoBean, binningJob)).get();
 
             binningJob = daoBean.getDiagnosticBinningJobDAO().findById(binningJobId);
             binningJob.setStatus(daoBean.getDiagnosticStatusTypeDAO().findById("Coverage loaded"));
