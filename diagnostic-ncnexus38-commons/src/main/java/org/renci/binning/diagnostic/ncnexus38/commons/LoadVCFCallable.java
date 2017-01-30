@@ -1,8 +1,6 @@
 package org.renci.binning.diagnostic.ncnexus38.commons;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -60,24 +58,35 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
     }
 
     @Override
+    public GenomeRef getGenomeRef() {
+        GenomeRef genomeRef = null;
+        try {
+            genomeRef = getDaoBean().getGenomeRefDAO().findById(4);
+        } catch (BinningDAOException e) {
+            e.printStackTrace();
+        }
+        return genomeRef;
+    }
+
+    @Override
     public LocatedVariant liftOver(LocatedVariant locatedVariant) throws BinningException {
         logger.debug("ENTERING liftOver(LocatedVariant)");
         LocatedVariant ret;
         try {
-            File chainFile = new File(String.format("%s/liftOver", System.getProperty("karaf.data")), "hg19ToHg38.over.chain.gz");
-            GenomeRef build38GenomeRef = getDaoBean().getGenomeRefDAO().findById(4);
+            File chainFile = new File(String.format("%s/liftOver", System.getProperty("karaf.data")), "hg38ToHg19.over.chain.gz");
+            GenomeRef genomeRef = getDaoBean().getGenomeRefDAO().findById(2);
             LiftOver liftOver = new LiftOver(chainFile);
             Interval interval = new Interval(String.format("chr%s", locatedVariant.getGenomeRefSeq().getContig()),
                     locatedVariant.getPosition(), locatedVariant.getEndPosition());
             Interval loInterval = liftOver.liftOver(interval);
             List<GenomeRefSeq> genomeRefSeqList = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndContigAndSeqTypeAndAccessionPrefix(
-                    build38GenomeRef.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
+                    genomeRef.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
 
             if (CollectionUtils.isEmpty(genomeRefSeqList)) {
                 throw new BinningException("GenomeRefSeq not found");
             }
 
-            ret = new LocatedVariant(build38GenomeRef, genomeRefSeqList.get(0), loInterval.getStart(), loInterval.getEnd(),
+            ret = new LocatedVariant(genomeRef, genomeRefSeqList.get(0), loInterval.getStart(), loInterval.getEnd(),
                     locatedVariant.getVariantType(), locatedVariant.getRef(), locatedVariant.getSeq());
         } catch (Exception e) {
             throw new BinningException(e);
