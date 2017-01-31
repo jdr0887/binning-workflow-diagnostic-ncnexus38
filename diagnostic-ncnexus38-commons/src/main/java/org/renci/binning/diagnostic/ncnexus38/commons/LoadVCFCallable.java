@@ -71,25 +71,26 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
     @Override
     public LocatedVariant liftOver(LocatedVariant locatedVariant) throws BinningException {
         logger.debug("ENTERING liftOver(LocatedVariant)");
-        LocatedVariant ret;
+        LocatedVariant ret = null;
         try {
             File chainFile = new File(String.format("%s/liftOver", System.getProperty("karaf.data")), "hg38ToHg19.over.chain.gz");
-            GenomeRef genomeRef = getDaoBean().getGenomeRefDAO().findById(2);
             LiftOver liftOver = new LiftOver(chainFile);
             Interval interval = new Interval(String.format("chr%s", locatedVariant.getGenomeRefSeq().getContig()),
                     locatedVariant.getPosition(), locatedVariant.getEndPosition());
             Interval loInterval = liftOver.liftOver(interval);
-            List<GenomeRefSeq> genomeRefSeqList = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndContigAndSeqTypeAndAccessionPrefix(
-                    genomeRef.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
-
-            if (CollectionUtils.isEmpty(genomeRefSeqList)) {
-                throw new BinningException("GenomeRefSeq not found");
+            if (loInterval != null) {
+                GenomeRef genomeRef = getDaoBean().getGenomeRefDAO().findById(2);
+                logger.info("from {} to {}", locatedVariant.getGenomeRef().toString(), genomeRef.toString());
+                List<GenomeRefSeq> genomeRefSeqList = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndContigAndSeqTypeAndAccessionPrefix(
+                        genomeRef.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
+                if (CollectionUtils.isEmpty(genomeRefSeqList)) {
+                    throw new BinningException("GenomeRefSeq not found");
+                }
+                ret = new LocatedVariant(genomeRef, genomeRefSeqList.get(0), loInterval.getStart(), loInterval.getEnd(),
+                        locatedVariant.getVariantType(), locatedVariant.getRef(), locatedVariant.getSeq());
             }
-
-            ret = new LocatedVariant(genomeRef, genomeRefSeqList.get(0), loInterval.getStart(), loInterval.getEnd(),
-                    locatedVariant.getVariantType(), locatedVariant.getRef(), locatedVariant.getSeq());
         } catch (Exception e) {
-            throw new BinningException(e);
+            logger.error(e.getMessage(), e);
         }
         return ret;
     }
