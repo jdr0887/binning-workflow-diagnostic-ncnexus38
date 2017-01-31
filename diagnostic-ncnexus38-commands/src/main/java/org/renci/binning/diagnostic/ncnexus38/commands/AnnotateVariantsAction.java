@@ -41,33 +41,38 @@ public class AnnotateVariantsAction implements Action {
         DiagnosticBinningJob binningJob = binningDAOBeanService.getDiagnosticBinningJobDAO().findById(binningJobId);
         logger.info(binningJob.toString());
 
-        try {
-            binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Annotating variants"));
-            binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+        Executors.newSingleThreadExecutor().execute(() -> {
 
-            List<Variants_61_2> variants = Executors.newSingleThreadExecutor()
-                    .submit(new AnnotateVariantsCallable(binningDAOBeanService, binningJob)).get();
-            if (CollectionUtils.isNotEmpty(variants)) {
-                logger.info(String.format("saving %d Variants_61_2 instances", variants.size()));
-                for (Variants_61_2 variant : variants) {
-                    logger.info(variant.toString());
-                    binningDAOBeanService.getVariants_61_2_DAO().save(variant);
+            try {
+
+                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Annotating variants"));
+                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+
+                List<Variants_61_2> variants = Executors.newSingleThreadExecutor()
+                        .submit(new AnnotateVariantsCallable(binningDAOBeanService, binningJob)).get();
+                if (CollectionUtils.isNotEmpty(variants)) {
+                    logger.info(String.format("saving %d Variants_61_2 instances", variants.size()));
+                    for (Variants_61_2 variant : variants) {
+                        logger.info(variant.toString());
+                        binningDAOBeanService.getVariants_61_2_DAO().save(variant);
+                    }
+                }
+
+                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Annotated variants"));
+                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+
+            } catch (Exception e) {
+                try {
+                    binningJob.setStop(new Date());
+                    binningJob.setFailureMessage(e.getMessage());
+                    binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
+                    binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+                } catch (BinningDAOException e1) {
+                    e1.printStackTrace();
                 }
             }
 
-            binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Annotated variants"));
-            binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-
-        } catch (Exception e) {
-            try {
-                binningJob.setStop(new Date());
-                binningJob.setFailureMessage(e.getMessage());
-                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
-                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-            } catch (BinningDAOException e1) {
-                e1.printStackTrace();
-            }
-        }
+        });
 
         return null;
     }

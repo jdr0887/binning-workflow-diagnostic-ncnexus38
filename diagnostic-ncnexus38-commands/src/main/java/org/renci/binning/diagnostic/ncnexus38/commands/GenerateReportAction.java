@@ -39,28 +39,33 @@ public class GenerateReportAction implements Action {
         DiagnosticBinningJob binningJob = binningDAOBeanService.getDiagnosticBinningJobDAO().findById(binningJobId);
         logger.info(binningJob.toString());
 
-        try {
+        Executors.newSingleThreadExecutor().execute(() -> {
 
-            binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Generating Report"));
-            binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-
-            Report report = Executors.newSingleThreadExecutor().submit(new GenerateReportCallable(binningDAOBeanService, binningJob)).get();
-            logger.info(report.toString());
-            binningDAOBeanService.getReportDAO().save(report);
-
-            binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Generated Report"));
-            binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-
-        } catch (Exception e) {
             try {
-                binningJob.setStop(new Date());
-                binningJob.setFailureMessage(e.getMessage());
-                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
+
+                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Generating Report"));
                 binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-            } catch (BinningDAOException e1) {
-                e1.printStackTrace();
+
+                Report report = Executors.newSingleThreadExecutor().submit(new GenerateReportCallable(binningDAOBeanService, binningJob))
+                        .get();
+                logger.info(report.toString());
+                binningDAOBeanService.getReportDAO().save(report);
+
+                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Generated Report"));
+                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+
+            } catch (Exception e) {
+                try {
+                    binningJob.setStop(new Date());
+                    binningJob.setFailureMessage(e.getMessage());
+                    binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
+                    binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+                } catch (BinningDAOException e1) {
+                    e1.printStackTrace();
+                }
             }
-        }
+        });
+
         return null;
 
     }

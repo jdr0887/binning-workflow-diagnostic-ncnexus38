@@ -41,34 +41,37 @@ public class UpdateFrequenciesAction implements Action {
         DiagnosticBinningJob binningJob = binningDAOBeanService.getDiagnosticBinningJobDAO().findById(binningJobId);
         logger.info(binningJob.toString());
 
-        try {
-            binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Updating frequency table"));
-            binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Updating frequency table"));
+                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
-            List<MaxFrequency> results = Executors.newSingleThreadExecutor()
-                    .submit(new UpdateFrequenciesCallable(binningDAOBeanService, binningJob)).get();
+                List<MaxFrequency> results = Executors.newSingleThreadExecutor()
+                        .submit(new UpdateFrequenciesCallable(binningDAOBeanService, binningJob)).get();
 
-            if (CollectionUtils.isNotEmpty(results)) {
-                logger.info(String.format("saving %d new MaxFrequency instances", results.size()));
-                for (MaxFrequency maxFrequency : results) {
-                    logger.info(maxFrequency.toString());
-                    binningDAOBeanService.getMaxFrequencyDAO().save(maxFrequency);
+                if (CollectionUtils.isNotEmpty(results)) {
+                    logger.info(String.format("saving %d new MaxFrequency instances", results.size()));
+                    for (MaxFrequency maxFrequency : results) {
+                        logger.info(maxFrequency.toString());
+                        binningDAOBeanService.getMaxFrequencyDAO().save(maxFrequency);
+                    }
+                }
+
+                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Updated frequency table"));
+                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+
+            } catch (Exception e) {
+                try {
+                    binningJob.setStop(new Date());
+                    binningJob.setFailureMessage(e.getMessage());
+                    binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
+                    binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+                } catch (BinningDAOException e1) {
+                    e1.printStackTrace();
                 }
             }
+        });
 
-            binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Updated frequency table"));
-            binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-
-        } catch (Exception e) {
-            try {
-                binningJob.setStop(new Date());
-                binningJob.setFailureMessage(e.getMessage());
-                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
-                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-            } catch (BinningDAOException e1) {
-                e1.printStackTrace();
-            }
-        }
         return null;
     }
 
