@@ -37,13 +37,16 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
     @Override
     public File getAllIntervalsFile(Integer listVersion) {
-        File allIntervalsFile = new File(String.format("$BINNING_INTERVALS_HOME/NCNEXUS38/all/allintervals.v%d.txt", listVersion));
+        logger.debug("ENTERING getAllIntervalsFile(Integer)");
+        String binningIntervalsHome = System.getenv("BINNING_INTERVALS_HOME");
+        File allIntervalsFile = new File(String.format("%s/NCNEXUS38/all/allintervals.v%d.txt", binningIntervalsHome, listVersion));
         logger.info("all intervals file: {}", allIntervalsFile.getAbsolutePath());
         return allIntervalsFile;
     }
 
     @Override
     public File getDepthFile(String participant, Integer listVersion) throws BinningException {
+        logger.debug("ENTERING getDepthFile(String, Integer)");
         Map<String, String> avuMap = new HashMap<String, String>();
         avuMap.put("ParticipantId", participant);
         avuMap.put("MaPSeqStudyName", "NCNEXUS38");
@@ -62,6 +65,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
     @Override
     public void processIntervals(SortedSet<GATKDepthInterval> allIntervalSet, File depthFile, String participant, Integer listVersion)
             throws BinningException {
+        logger.debug("ENTERING processIntervals(SortedSet<GATKDepthInterval>, File, String, Integer)");
         List<SAMToolsDepthInterval> samtoolsDepthIntervals = new ArrayList<>();
 
         try (FileReader fr = new FileReader(depthFile); BufferedReader br = new BufferedReader(fr)) {
