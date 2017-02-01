@@ -37,7 +37,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
     @Override
     public File getAllIntervalsFile(Integer listVersion) {
-        File allIntervalsFile = new File(String.format("$BINNING_INTERVALS_HOME/NCNEXUS38/allintervals.v%d.txt", listVersion));
+        File allIntervalsFile = new File(String.format("$BINNING_INTERVALS_HOME/NCNEXUS38/all/allintervals.v%d.txt", listVersion));
         logger.info("all intervals file: {}", allIntervalsFile.getAbsolutePath());
         return allIntervalsFile;
     }
