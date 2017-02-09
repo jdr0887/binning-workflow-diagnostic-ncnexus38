@@ -11,8 +11,8 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class ListJobsAction implements Action {
     private static final Logger logger = LoggerFactory.getLogger(ListJobsAction.class);
 
     @Reference
-    private BinningDAOBeanService binningDAOBeanService;
+    private CANVASDAOBeanService daoBeanService;
 
     @Option(name = "--dxId", description = "DX Identifier", required = false, multiValued = false)
     private Integer dxId;
@@ -39,10 +39,10 @@ public class ListJobsAction implements Action {
         DiagnosticBinningJob example = new DiagnosticBinningJob();
         example.setStudy("NCNEXUS38");
         if (dxId != null) {
-            example.setDx(binningDAOBeanService.getDXDAO().findById(dxId));
+            example.setDx(daoBeanService.getDXDAO().findById(dxId));
         }
 
-        List<DiagnosticBinningJob> foundBinningJobs = binningDAOBeanService.getDiagnosticBinningJobDAO().findByExample(example);
+        List<DiagnosticBinningJob> foundBinningJobs = daoBeanService.getDiagnosticBinningJobDAO().findByExample(example);
         StringBuilder sb = new StringBuilder();
         try (Formatter formatter = new Formatter(sb, Locale.US)) {
             if (CollectionUtils.isNotEmpty(foundBinningJobs)) {

@@ -3,24 +3,24 @@ package org.renci.binning.diagnostic.ncnexus38.commons;
 import java.util.concurrent.Executors;
 
 import org.renci.binning.core.diagnostic.AbstractGenerateReportCallable;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.BinningDAOException;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.binning.dao.jpa.BinningDAOManager;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.jpa.CANVASDAOManager;
 
 public class GenerateReportCallable extends AbstractGenerateReportCallable {
 
-    public GenerateReportCallable(BinningDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
+    public GenerateReportCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
         super(daoBean, binningJob);
     }
 
     public static void main(String[] args) {
         try {
-            BinningDAOManager daoMgr = BinningDAOManager.getInstance();
+            CANVASDAOManager daoMgr = CANVASDAOManager.getInstance();
             DiagnosticBinningJob binningJob = daoMgr.getDAOBean().getDiagnosticBinningJobDAO().findById(4218);
             GenerateReportCallable runnable = new GenerateReportCallable(daoMgr.getDAOBean(), binningJob);
             Executors.newSingleThreadExecutor().submit(runnable);
-        } catch (BinningDAOException e) {
+        } catch (CANVASDAOException e) {
             e.printStackTrace();
         }
     }

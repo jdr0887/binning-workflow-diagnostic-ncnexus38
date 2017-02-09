@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.renci.binning.core.diagnostic.DiagnosticBinningJobInfo;
-import org.renci.binning.dao.clinbin.model.DiagnosticStatusType;
+import org.renci.canvas.dao.clinbin.model.DiagnosticStatusType;
 
 @Path("/DiagnosticNCNEXUS38Service/")
 @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })

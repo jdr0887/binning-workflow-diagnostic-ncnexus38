@@ -9,10 +9,10 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.BinningDAOException;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
 import org.renci.binning.diagnostic.ncnexus38.commons.LoadVCFCallable;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +31,8 @@ public class LoadVCFDelegate implements JavaDelegate {
         Map<String, Object> variables = execution.getVariables();
 
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
-        ServiceReference<BinningDAOBeanService> daoBeanServiceReference = bundleContext.getServiceReference(BinningDAOBeanService.class);
-        BinningDAOBeanService daoBean = bundleContext.getService(daoBeanServiceReference);
+        ServiceReference<CANVASDAOBeanService> daoBeanServiceReference = bundleContext.getServiceReference(CANVASDAOBeanService.class);
+        CANVASDAOBeanService daoBean = bundleContext.getService(daoBeanServiceReference);
 
         Integer binningJobId = null;
         Object o = variables.get("binningJobId");
@@ -62,7 +62,7 @@ public class LoadVCFDelegate implements JavaDelegate {
                 daoBean.getDiagnosticBinningJobDAO().save(binningJob);
                 logger.info(binningJob.toString());
 
-            } catch (BinningDAOException e1) {
+            } catch (CANVASDAOException e1) {
                 e1.printStackTrace();
             }
         }

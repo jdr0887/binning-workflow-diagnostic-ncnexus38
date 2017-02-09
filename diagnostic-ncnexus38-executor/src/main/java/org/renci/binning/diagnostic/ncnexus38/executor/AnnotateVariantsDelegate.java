@@ -11,11 +11,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.BinningDAOException;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.binning.dao.refseq.model.Variants_61_2;
 import org.renci.binning.diagnostic.ncnexus38.commons.AnnotateVariantsCallable;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.refseq.model.Variants_61_2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +34,8 @@ public class AnnotateVariantsDelegate implements JavaDelegate {
         Map<String, Object> variables = execution.getVariables();
 
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
-        ServiceReference<BinningDAOBeanService> daoBeanServiceReference = bundleContext.getServiceReference(BinningDAOBeanService.class);
-        BinningDAOBeanService daoBean = bundleContext.getService(daoBeanServiceReference);
+        ServiceReference<CANVASDAOBeanService> daoBeanServiceReference = bundleContext.getServiceReference(CANVASDAOBeanService.class);
+        CANVASDAOBeanService daoBean = bundleContext.getService(daoBeanServiceReference);
 
         Integer binningJobId = null;
         Object o = variables.get("binningJobId");
@@ -72,7 +72,7 @@ public class AnnotateVariantsDelegate implements JavaDelegate {
                 binningJob.setStatus(daoBean.getDiagnosticStatusTypeDAO().findById("Failed"));
                 daoBean.getDiagnosticBinningJobDAO().save(binningJob);
                 logger.info(binningJob.toString());
-            } catch (BinningDAOException e1) {
+            } catch (CANVASDAOException e1) {
                 e1.printStackTrace();
             }
         }

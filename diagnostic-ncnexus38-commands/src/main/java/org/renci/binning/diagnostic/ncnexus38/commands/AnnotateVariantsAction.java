@@ -10,11 +10,11 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.BinningDAOException;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.binning.dao.refseq.model.Variants_61_2;
 import org.renci.binning.diagnostic.ncnexus38.commons.AnnotateVariantsCallable;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.refseq.model.Variants_61_2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class AnnotateVariantsAction implements Action {
     private static final Logger logger = LoggerFactory.getLogger(AnnotateVariantsAction.class);
 
     @Reference
-    private BinningDAOBeanService binningDAOBeanService;
+    private CANVASDAOBeanService daoBeanService;
 
     @Option(name = "--binningJobId", description = "DiagnosticBinningJob Identifier", required = true, multiValued = false)
     private Integer binningJobId;
@@ -38,36 +38,36 @@ public class AnnotateVariantsAction implements Action {
     public Object execute() throws Exception {
         logger.debug("ENTERING execute()");
 
-        DiagnosticBinningJob binningJob = binningDAOBeanService.getDiagnosticBinningJobDAO().findById(binningJobId);
+        DiagnosticBinningJob binningJob = daoBeanService.getDiagnosticBinningJobDAO().findById(binningJobId);
         logger.info(binningJob.toString());
 
         Executors.newSingleThreadExecutor().execute(() -> {
 
             try {
 
-                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Annotating variants"));
-                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+                binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Annotating variants"));
+                daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
                 List<Variants_61_2> variants = Executors.newSingleThreadExecutor()
-                        .submit(new AnnotateVariantsCallable(binningDAOBeanService, binningJob)).get();
+                        .submit(new AnnotateVariantsCallable(daoBeanService, binningJob)).get();
                 if (CollectionUtils.isNotEmpty(variants)) {
                     logger.info(String.format("saving %d Variants_61_2 instances", variants.size()));
                     for (Variants_61_2 variant : variants) {
                         logger.info(variant.toString());
-                        binningDAOBeanService.getVariants_61_2_DAO().save(variant);
+                        daoBeanService.getVariants_61_2_DAO().save(variant);
                     }
                 }
 
-                binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Annotated variants"));
-                binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+                binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Annotated variants"));
+                daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
             } catch (Exception e) {
                 try {
                     binningJob.setStop(new Date());
                     binningJob.setFailureMessage(e.getMessage());
-                    binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
-                    binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob);
-                } catch (BinningDAOException e1) {
+                    binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
+                    daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
+                } catch (CANVASDAOException e1) {
                     e1.printStackTrace();
                 }
             }

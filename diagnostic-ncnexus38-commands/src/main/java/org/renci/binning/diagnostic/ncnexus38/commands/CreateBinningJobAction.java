@@ -10,9 +10,9 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.BinningDAOException;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class CreateBinningJobAction implements Action {
     private static final Logger logger = LoggerFactory.getLogger(CreateBinningJobAction.class);
 
     @Reference
-    private BinningDAOBeanService binningDAOBeanService;
+    private CANVASDAOBeanService daoBeanService;
 
     @Option(name = "--gender", description = "Gender (M|F)", required = true, multiValued = false)
     private String gender;
@@ -51,7 +51,7 @@ public class CreateBinningJobAction implements Action {
         DiagnosticBinningJob binningJob = new DiagnosticBinningJob();
 
         binningJob.setStudy("NCNEXUS38");
-        binningJob.setStatus(binningDAOBeanService.getDiagnosticStatusTypeDAO().findById("Requested"));
+        binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Requested"));
 
         binningJob.setGender(gender);
         binningJob.setParticipant(participant);
@@ -60,19 +60,19 @@ public class CreateBinningJobAction implements Action {
         if (StringUtils.isNotEmpty(vcf)) {
             File vcfFile = new File(vcf);
             if (!vcfFile.exists()) {
-                throw new BinningDAOException("VCF not found: " + vcf);
+                throw new CANVASDAOException("VCF not found: " + vcf);
             }
             binningJob.setVcfFile(vcf);
         }
 
-        binningJob.setDx(binningDAOBeanService.getDXDAO().findById(dxId));
+        binningJob.setDx(daoBeanService.getDXDAO().findById(dxId));
         logger.info(binningJob.getDx().toString());
 
-        List<DiagnosticBinningJob> foundBinningJobs = binningDAOBeanService.getDiagnosticBinningJobDAO().findByExample(binningJob);
+        List<DiagnosticBinningJob> foundBinningJobs = daoBeanService.getDiagnosticBinningJobDAO().findByExample(binningJob);
         if (CollectionUtils.isNotEmpty(foundBinningJobs)) {
             binningJob = foundBinningJobs.get(0);
         } else {
-            binningJob.setId(binningDAOBeanService.getDiagnosticBinningJobDAO().save(binningJob));
+            binningJob.setId(daoBeanService.getDiagnosticBinningJobDAO().save(binningJob));
         }
         logger.info(binningJob.toString());
 

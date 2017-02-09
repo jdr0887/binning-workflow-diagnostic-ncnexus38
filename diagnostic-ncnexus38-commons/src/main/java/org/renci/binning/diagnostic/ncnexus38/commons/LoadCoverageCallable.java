@@ -20,10 +20,10 @@ import org.renci.binning.core.GATKDepthInterval;
 import org.renci.binning.core.IRODSUtils;
 import org.renci.binning.core.SAMToolsDepthInterval;
 import org.renci.binning.core.diagnostic.AbstractLoadCoverageCallable;
-import org.renci.binning.dao.BinningDAOBeanService;
-import org.renci.binning.dao.BinningDAOException;
-import org.renci.binning.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.binning.dao.jpa.BinningDAOManager;
+import org.renci.canvas.dao.CANVASDAOBeanService;
+import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.jpa.CANVASDAOManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadCoverageCallable.class);
 
-    public LoadCoverageCallable(BinningDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
+    public LoadCoverageCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
         super(daoBean, binningJob);
     }
 
@@ -137,11 +137,11 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
     public static void main(String[] args) {
         try {
-            BinningDAOManager daoMgr = BinningDAOManager.getInstance();
+            CANVASDAOManager daoMgr = CANVASDAOManager.getInstance();
             DiagnosticBinningJob binningJob = daoMgr.getDAOBean().getDiagnosticBinningJobDAO().findById(4218);
             LoadCoverageCallable callable = new LoadCoverageCallable(daoMgr.getDAOBean(), binningJob);
             callable.call();
-        } catch (BinningDAOException | BinningException e) {
+        } catch (CANVASDAOException | BinningException e) {
             e.printStackTrace();
         }
     }
