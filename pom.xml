@@ -2,7 +2,7 @@
   <parent>
     <groupId>org.renci.binning</groupId>
     <artifactId>binning</artifactId>
-    <version>0.0.33</version>
+    <version>0.0.36-SNAPSHOT</version>
   </parent>
   <name>Binning :: Workflow :: Diagnostic NCNEXUS38</name>
   <modelVersion>4.0.0</modelVersion>
