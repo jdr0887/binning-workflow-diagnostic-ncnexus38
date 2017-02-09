@@ -10,6 +10,9 @@
   <artifactId>diagnostic-ncnexus38-commons</artifactId>
   <version>0.0.21-SNAPSHOT</version>
   <packaging>bundle</packaging>
+  <properties>
+    <maven.site.plugin.skip>true</maven.site.plugin.skip>    
+  </properties>              
   <dependencies>
     <dependency>
       <groupId>org.renci.binning</groupId>
