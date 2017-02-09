@@ -9,11 +9,11 @@
   http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd
   ">
 
-  <reference id="binningDAOBeanService" interface="org.renci.binning.dao.BinningDAOBeanService" />
+  <reference id="daoBeanService" interface="org.renci.canvas.dao.CANVASDAOBeanService" />
   <reference id="binningExecutorService" interface="org.renci.binning.core.BinningExecutorService" />
 
   <bean id="diagnosticNCNEXUS38Impl" class="org.renci.binning.diagnostic.ncnexus38.ws.DiagnosticNCNEXUS38ServiceImpl">
-    <property name="binningDAOBeanService" ref="binningDAOBeanService" />
+    <property name="daoBeanService" ref="daoBeanService" />
     <property name="binningExecutorService" ref="binningExecutorService" />
   </bean>
 
