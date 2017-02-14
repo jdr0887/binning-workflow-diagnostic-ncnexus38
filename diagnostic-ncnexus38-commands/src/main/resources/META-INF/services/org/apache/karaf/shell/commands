@@ -1,8 +1,0 @@
-org.renci.binning.diagnostic.ncnexus38.commands.AnnotateVariantsAction
-org.renci.binning.diagnostic.ncnexus38.commands.CreateBinningJobAction
-org.renci.binning.diagnostic.ncnexus38.commands.GenerateReportAction
-org.renci.binning.diagnostic.ncnexus38.commands.ListJobsAction
-org.renci.binning.diagnostic.ncnexus38.commands.LoadCoverageAction
-org.renci.binning.diagnostic.ncnexus38.commands.LoadVCFAction
-org.renci.binning.diagnostic.ncnexus38.commands.UpdateDiagnosticBinsAction
-org.renci.binning.diagnostic.ncnexus38.commands.UpdateFrequenciesAction
