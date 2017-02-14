@@ -1,0 +1,15 @@
+<features name="diagnostic-ncnexus38-workflow-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+
+  <feature name="diagnostic-ncnexus38-workflow" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:org.renci.canvas.binning.diagnostic-ncnexus38-workflow/diagnostic-ncnexus38-workflow-commons/${project.version}</bundle>
+    <bundle>mvn:org.renci.canvas.binning.diagnostic-ncnexus38-workflow/diagnostic-ncnexus38-workflow-commands/${project.version}</bundle>    
+    <bundle>mvn:org.renci.canvas.binning.diagnostic-ncnexus38-workflow/diagnostic-ncnexus38-workflow-executor/${project.version}</bundle>
+    <bundle>mvn:org.renci.canvas.binning.diagnostic-ncnexus38-workflow/diagnostic-ncnexus38-workflow-ws/${project.version}</bundle>
+  </feature>
+
+</features>
+
+
+
+
+
