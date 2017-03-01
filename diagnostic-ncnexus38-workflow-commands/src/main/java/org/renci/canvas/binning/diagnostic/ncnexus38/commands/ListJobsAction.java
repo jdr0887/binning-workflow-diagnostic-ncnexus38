@@ -71,7 +71,7 @@ public class ListJobsAction implements Action {
                     formatter.flush();
                 }
             } else {
-                formatter.format("No DiagnosticBinningJobs found: %s", example.toString());
+                formatter.format("No DiagnosticBinningJobs found");
             }
             System.out.println(formatter.toString());
         }
