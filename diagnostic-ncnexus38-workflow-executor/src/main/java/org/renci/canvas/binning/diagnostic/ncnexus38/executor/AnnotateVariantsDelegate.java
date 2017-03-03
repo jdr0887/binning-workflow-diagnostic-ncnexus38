@@ -15,7 +15,7 @@ import org.renci.canvas.binning.diagnostic.ncnexus38.commons.AnnotateVariantsCal
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.canvas.dao.refseq.model.Variants_78_4;
+import org.renci.canvas.dao.refseq.model.Variants_80_4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,13 +49,13 @@ public class AnnotateVariantsDelegate implements JavaDelegate {
             daoBean.getDiagnosticBinningJobDAO().save(binningJob);
             logger.info(binningJob.toString());
 
-            List<Variants_78_4> variants = Executors.newSingleThreadExecutor().submit(new AnnotateVariantsCallable(daoBean, binningJob))
+            List<Variants_80_4> variants = Executors.newSingleThreadExecutor().submit(new AnnotateVariantsCallable(daoBean, binningJob))
                     .get();
             if (CollectionUtils.isNotEmpty(variants)) {
-                logger.info(String.format("saving %d Variants_61_2 instances", variants.size()));
-                for (Variants_78_4 variant : variants) {
+                logger.info(String.format("saving %d Variants_80_4 instances", variants.size()));
+                for (Variants_80_4 variant : variants) {
                     logger.info(variant.toString());
-                    daoBean.getVariants_78_4_DAO().save(variant);
+                    daoBean.getVariants_80_4_DAO().save(variant);
                 }
             }
 
