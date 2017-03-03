@@ -2,13 +2,13 @@
   <parent>
     <groupId>org.renci.canvas.binning</groupId>
     <artifactId>diagnostic-ncnexus38-workflow</artifactId>
-    <version>0.0.24-SNAPSHOT</version>
+    <version>0.0.24</version>
   </parent>
   <name>CANVAS :: Binning :: Diagnostic NCNEXUS38 Workflow :: Commands</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.renci.canvas.binning.diagnostic-ncnexus38-workflow</groupId>
   <artifactId>diagnostic-ncnexus38-workflow-commands</artifactId>
-  <version>0.0.24-SNAPSHOT</version>
+  <version>0.0.24</version>
   <packaging>bundle</packaging>
   <properties>
     <maven.site.plugin.skip>true</maven.site.plugin.skip>    
