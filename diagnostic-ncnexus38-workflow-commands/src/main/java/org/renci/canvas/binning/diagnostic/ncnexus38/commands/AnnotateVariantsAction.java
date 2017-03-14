@@ -43,6 +43,7 @@ public class AnnotateVariantsAction implements Action {
 
         Executors.newSingleThreadExecutor().execute(() -> {
 
+            long start = System.currentTimeMillis();
             try {
 
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Annotating variants"));
@@ -71,6 +72,9 @@ public class AnnotateVariantsAction implements Action {
                     e1.printStackTrace();
                 }
             }
+
+            long end = System.currentTimeMillis();
+            logger.info("total duration (seconds): {}", (end - start) / 1000);
 
         });
 

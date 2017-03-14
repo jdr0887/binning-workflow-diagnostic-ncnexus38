@@ -41,6 +41,7 @@ public class LoadCoverageAction implements Action {
         logger.info(binningJob.toString());
 
         Executors.newSingleThreadExecutor().execute(() -> {
+            long start = System.currentTimeMillis();
             try {
 
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Coverage loading"));
@@ -64,6 +65,9 @@ public class LoadCoverageAction implements Action {
                     e1.printStackTrace();
                 }
             }
+            long end = System.currentTimeMillis();
+            logger.info("total duration (seconds): {}", (end - start) / 1000);
+
         });
 
         return null;

@@ -39,6 +39,7 @@ public class LoadVCFAction implements Action {
         logger.info(binningJob.toString());
 
         Executors.newSingleThreadExecutor().execute(() -> {
+            long start = System.currentTimeMillis();
             try {
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("VCF loading"));
                 daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
@@ -58,6 +59,9 @@ public class LoadVCFAction implements Action {
                     e1.printStackTrace();
                 }
             }
+            long end = System.currentTimeMillis();
+            logger.info("total duration (seconds): {}", (end - start) / 1000);
+
         });
 
         return null;
