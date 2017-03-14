@@ -80,7 +80,6 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
             Interval loInterval = liftOver.liftOver(interval);
             if (loInterval != null) {
                 GenomeRef genomeRef = getDaoBean().getGenomeRefDAO().findById(2);
-                logger.info("from {} to {}", locatedVariant.getGenomeRef().toString(), genomeRef.toString());
                 List<GenomeRefSeq> genomeRefSeqList = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndContigAndSeqTypeAndAccessionPrefix(
                         genomeRef.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
                 if (CollectionUtils.isEmpty(genomeRefSeqList)) {
@@ -100,8 +99,9 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
         logger.debug("ENTERING getVCF(String)");
         Map<String, String> avuMap = new HashMap<String, String>();
         avuMap.put("ParticipantId", participant);
-        avuMap.put("MaPSeqWorkflowName", "NCNEXUS38DX");
-        avuMap.put("MaPSeqJobName", "FilterVariant");
+        avuMap.put("MaPSeqSystem", "prod");
+        avuMap.put("MaPSeqWorkflowName", "NCNEXUS38MergeVC");
+        avuMap.put("MaPSeqJobName", "GATKVariantAnnotator");
         avuMap.put("MaPSeqMimeType", "TEXT_VCF");
         String irodsFile = IRODSUtils.findFile(avuMap);
         logger.info("irodsFile: {}", irodsFile);
