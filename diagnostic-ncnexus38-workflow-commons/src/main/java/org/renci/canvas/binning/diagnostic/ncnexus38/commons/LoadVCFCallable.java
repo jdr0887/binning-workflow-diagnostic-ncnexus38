@@ -55,7 +55,6 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
     public Set<String> getExcludesFilter() {
         logger.debug("ENTERING getExcludesFilter()");
         Set<String> excludesFilter = new HashSet<>();
-        excludesFilter.add("LowQual");
         return excludesFilter;
     }
 
@@ -65,7 +64,7 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
         try {
             genomeRef = getDaoBean().getGenomeRefDAO().findById(4);
         } catch (CANVASDAOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return genomeRef;
     }
