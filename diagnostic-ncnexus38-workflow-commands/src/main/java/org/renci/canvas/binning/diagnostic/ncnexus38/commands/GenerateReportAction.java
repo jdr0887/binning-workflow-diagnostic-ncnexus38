@@ -56,13 +56,14 @@ public class GenerateReportAction implements Action {
                 daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
                 try {
                     binningJob.setStop(new Date());
                     binningJob.setFailureMessage(e.getMessage());
                     binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Failed"));
                     daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
                 } catch (CANVASDAOException e1) {
-                    e1.printStackTrace();
+                    logger.error(e1.getMessage(), e1);
                 }
             }
             
