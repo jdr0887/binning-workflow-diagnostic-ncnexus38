@@ -34,11 +34,6 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
 
     public LoadVCFCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
         super(daoBean, binningJob);
-        try {
-            this.genomeRef4LiftOver = daoBean.getGenomeRefDAO().findById(2);
-        } catch (CANVASDAOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -86,6 +81,10 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
                     locatedVariant.getPosition(), locatedVariant.getEndPosition());
             Interval loInterval = liftOver.liftOver(interval);
             if (loInterval != null) {
+                if (this.genomeRef4LiftOver == null) {
+                    this.genomeRef4LiftOver = getDaoBean().getGenomeRefDAO().findById(2);
+                }
+
                 List<GenomeRefSeq> genomeRefSeqList = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndContigAndSeqTypeAndAccessionPrefix(
                         genomeRef4LiftOver.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
                 if (CollectionUtils.isEmpty(genomeRefSeqList)) {
