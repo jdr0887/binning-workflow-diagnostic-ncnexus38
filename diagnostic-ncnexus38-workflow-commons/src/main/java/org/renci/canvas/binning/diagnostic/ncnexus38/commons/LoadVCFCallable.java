@@ -30,8 +30,15 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadVCFCallable.class);
 
+    private GenomeRef genomeRef4LiftOver;
+
     public LoadVCFCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
         super(daoBean, binningJob);
+        try {
+            this.genomeRef4LiftOver = daoBean.getGenomeRefDAO().findById(2);
+        } catch (CANVASDAOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -79,13 +86,12 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
                     locatedVariant.getPosition(), locatedVariant.getEndPosition());
             Interval loInterval = liftOver.liftOver(interval);
             if (loInterval != null) {
-                GenomeRef genomeRef = getDaoBean().getGenomeRefDAO().findById(2);
                 List<GenomeRefSeq> genomeRefSeqList = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndContigAndSeqTypeAndAccessionPrefix(
-                        genomeRef.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
+                        genomeRef4LiftOver.getId(), locatedVariant.getGenomeRefSeq().getContig(), "Chromosome", "NC_");
                 if (CollectionUtils.isEmpty(genomeRefSeqList)) {
                     throw new BinningException("GenomeRefSeq not found");
                 }
-                ret = new LocatedVariant(genomeRef, genomeRefSeqList.get(0), loInterval.getStart(), loInterval.getEnd(),
+                ret = new LocatedVariant(genomeRef4LiftOver, genomeRefSeqList.get(0), loInterval.getStart(), loInterval.getEnd(),
                         locatedVariant.getVariantType(), locatedVariant.getRef(), locatedVariant.getSeq());
             }
         } catch (Exception e) {
