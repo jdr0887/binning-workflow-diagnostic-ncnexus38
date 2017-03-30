@@ -66,7 +66,7 @@ public class ListJobsAction implements Action {
 
                     formatter.format(format, binningJob.getId().toString(), binningJob.getParticipant(), binningJob.getStudy(),
                             binningJob.getGender(), binningJob.getDx().getId(), binningJob.getListVersion(),
-                            binningJob.getAssembly() != null ? binningJob.getAssembly().getId() : "", binningJob.getStatus().getName(),
+                            binningJob.getAssembly() != null ? binningJob.getAssembly().getId() : "", binningJob.getStatus().getId(),
                             formattedStart, formattedStop, binningJob.getVcfFile());
                     formatter.flush();
                 }

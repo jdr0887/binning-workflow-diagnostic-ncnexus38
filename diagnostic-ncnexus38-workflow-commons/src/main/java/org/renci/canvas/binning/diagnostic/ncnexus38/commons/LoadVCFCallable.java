@@ -87,7 +87,7 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
                 }
 
                 if (this.genomeRefSeqs4LiftOver == null) {
-                    this.genomeRefSeqs4LiftOver = getDaoBean().getGenomeRefSeqDAO().findByRefIdAndSeqType(genomeRef4LiftOver.getId(),
+                    this.genomeRefSeqs4LiftOver = getDaoBean().getGenomeRefSeqDAO().findByGenomeRefIdAndSeqType(genomeRef4LiftOver.getId(),
                             "Chromosome");
                 }
 
