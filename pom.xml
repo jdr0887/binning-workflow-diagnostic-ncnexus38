@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.renci.canvas.binning</groupId>
   <artifactId>diagnostic-ncnexus38-workflow</artifactId>
-  <version>0.0.30-SNAPSHOT</version>
+  <version>0.0.30</version>
   <packaging>pom</packaging>
   <properties>
     <maven.site.plugin.skip>false</maven.site.plugin.skip>    
@@ -28,19 +28,19 @@
     <url>https://github.com/jdr0887/binning-workflow-diagnostic-ncnexus38</url>
     <developerConnection>scm:git:git@github.com:jdr0887/binning-workflow-diagnostic-ncnexus38.git</developerConnection>
     <connection>scm:git:git@github.com:jdr0887/binning-workflow-diagnostic-ncnexus38.git</connection>
-    <tag>diagnostic-ncnexus38-0.0.21</tag>
+    <tag>diagnostic-ncnexus38-workflow-0.0.30</tag>
   </scm>            
   <dependencyManagement>
     <dependencies>
       <dependency>
 	<groupId>org.renci.canvas.binning.diagnostic-ncnexus38-workflow</groupId>
 	<artifactId>diagnostic-ncnexus38-workflow-commons</artifactId>
-	<version>0.0.30-SNAPSHOT</version>
+	<version>0.0.30</version>
       </dependency>
       <dependency>
 	<groupId>org.renci.canvas.binning.diagnostic-ncnexus38-workflow</groupId>
 	<artifactId>diagnostic-ncnexus38-workflow-executor</artifactId>
-	<version>0.0.30-SNAPSHOT</version>
+	<version>0.0.30</version>
       </dependency>      
     </dependencies>
   </dependencyManagement>
