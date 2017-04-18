@@ -12,4 +12,5 @@ public class Scratch {
         String participantDir = Files.createTempDirectory(String.format("NCNEXUS38-%s-", "NCG_00020")).toFile().getAbsolutePath();
         System.out.println(participantDir);
     }
+
 }
