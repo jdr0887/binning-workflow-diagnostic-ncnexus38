@@ -1,27 +1,29 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.renci.canvas.binning.core.BinningException;
 import org.renci.canvas.binning.core.GATKDepthInterval;
 import org.renci.canvas.binning.core.IRODSUtils;
-import org.renci.canvas.binning.core.SAMToolsDepthInterval;
 import org.renci.canvas.binning.core.diagnostic.AbstractLoadCoverageCallable;
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
+import org.renci.canvas.dao.clinbin.model.DXCoverage;
+import org.renci.canvas.dao.clinbin.model.DXCoveragePK;
+import org.renci.canvas.dao.clinbin.model.DXExons;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
 import org.renci.canvas.dao.jpa.CANVASDAOManager;
 import org.slf4j.Logger;
@@ -49,12 +51,13 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
         logger.debug("ENTERING getDepthFile(String, Integer)");
         Map<String, String> avuMap = new HashMap<String, String>();
         avuMap.put("ParticipantId", participant);
-        avuMap.put("MaPSeqWorkflowName", "NCNEXUS38VariantCalling");
-        avuMap.put("MaPSeqJobName", "SAMToolsDepth");
+        avuMap.put("MaPSeqStudyName", "NCNEXUS38");
+        avuMap.put("MaPSeqWorkflowName", "NCNEXUS38DX");
+        avuMap.put("MaPSeqJobName", "SAMToolsDepthToGATKDOCFormatConverter");
         avuMap.put("MaPSeqMimeType", "TEXT_PLAIN");
-        String irodsFile = IRODSUtils.findFile(avuMap, ".depth.txt");
+        String irodsFile = IRODSUtils.findFile(avuMap, String.format(".depth.v%s.txt", listVersion));
         logger.info("irodsFile = {}", irodsFile);
-        Path participantPath = Paths.get(System.getProperty("karaf.data"), "tmp", "GS", participant);
+        Path participantPath = Paths.get(System.getProperty("karaf.data"), "tmp", "NCNEXUS38", participant);
         participantPath.toFile().mkdirs();
         File depthFile = IRODSUtils.getFile(irodsFile, participantPath.toString());
         logger.info("depthFile: {}", depthFile.getAbsolutePath());
@@ -62,77 +65,85 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
     }
 
     @Override
+    public Void call() throws BinningException {
+        logger.debug("ENTERING call()");
+
+        try {
+
+            SortedSet<GATKDepthInterval> allIntervalSet = new TreeSet<GATKDepthInterval>();
+
+            File depthFile = getDepthFile(getBinningJob().getParticipant(), getBinningJob().getListVersion());
+            try (Stream<String> stream = Files.lines(depthFile.toPath())) {
+                stream.forEach(a -> {
+                    if (!a.startsWith("Target")) {
+                        allIntervalSet.add(new GATKDepthInterval(a));
+                    }
+                });
+            }
+
+            // load exon coverage
+            for (GATKDepthInterval interval : allIntervalSet) {
+                logger.debug(interval.toString());
+                String chromosome = interval.getContig();
+                Integer start = interval.getStartPosition();
+                Integer end = interval.getEndPosition();
+                if (end == null) {
+                    end = start;
+                }
+
+                List<DXExons> dxExonList = getDaoBean().getDXExonsDAO()
+                        .findByListVersionAndChromosomeAndRange(getBinningJob().getListVersion(), chromosome, start, end);
+                if (CollectionUtils.isNotEmpty(dxExonList)) {
+
+                    ExecutorService es = Executors.newFixedThreadPool(4);
+                    for (DXExons dxExon : dxExonList) {
+                        es.submit(() -> {
+
+                            try {
+                                logger.info(dxExon.toString());
+
+                                DXCoveragePK key = new DXCoveragePK(dxExon.getId(), getBinningJob().getParticipant());
+                                DXCoverage dxCoverage = getDaoBean().getDXCoverageDAO().findById(key);
+                                if (dxCoverage == null) {
+                                    dxCoverage = new DXCoverage(key);
+                                }
+
+                                dxCoverage.setExon(dxExon);
+                                dxCoverage.setFractionGreaterThan1(interval.getSamplePercentAbove1() * 0.01);
+                                dxCoverage.setFractionGreaterThan2(interval.getSamplePercentAbove2() * 0.01);
+                                dxCoverage.setFractionGreaterThan5(interval.getSamplePercentAbove5() * 0.01);
+                                dxCoverage.setFractionGreaterThan8(interval.getSamplePercentAbove8() * 0.01);
+                                dxCoverage.setFractionGreaterThan10(interval.getSamplePercentAbove10() * 0.01);
+                                dxCoverage.setFractionGreaterThan15(interval.getSamplePercentAbove15() * 0.01);
+                                dxCoverage.setFractionGreaterThan20(interval.getSamplePercentAbove20() * 0.01);
+                                dxCoverage.setFractionGreaterThan30(interval.getSamplePercentAbove30() * 0.01);
+                                dxCoverage.setFractionGreaterThan50(interval.getSamplePercentAbove50() * 0.01);
+                                logger.info(dxCoverage.toString());
+                                getDaoBean().getDXCoverageDAO().save(dxCoverage);
+                            } catch (CANVASDAOException e) {
+                                logger.error(e.getMessage(), e);
+                            }
+
+                        });
+                    }
+                    es.shutdown();
+                    es.awaitTermination(1L, TimeUnit.HOURS);
+                }
+
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new BinningException(e);
+        }
+        return null;
+    }
+
+    @Override
     public void processIntervals(SortedSet<GATKDepthInterval> allIntervalSet, File depthFile, String participant, Integer listVersion)
             throws BinningException {
         logger.debug("ENTERING processIntervals(SortedSet<GATKDepthInterval>, File, String, Integer)");
-        List<SAMToolsDepthInterval> samtoolsDepthIntervals = new ArrayList<>();
-
-        try (FileReader fr = new FileReader(depthFile); BufferedReader br = new BufferedReader(fr)) {
-            br.readLine();
-            String line;
-            while ((line = br.readLine()) != null) {
-                samtoolsDepthIntervals.add(new SAMToolsDepthInterval(line));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            ExecutorService es = Executors.newFixedThreadPool(4);
-            for (GATKDepthInterval gatkDepthInterval : allIntervalSet) {
-
-                es.submit(() -> {
-                    Map<Integer, Integer> percentageMap = new HashMap<Integer, Integer>();
-
-                    percentageMap.put(1, 0);
-                    percentageMap.put(2, 0);
-                    percentageMap.put(5, 0);
-                    percentageMap.put(8, 0);
-                    percentageMap.put(10, 0);
-                    percentageMap.put(15, 0);
-                    percentageMap.put(20, 0);
-                    percentageMap.put(30, 0);
-                    percentageMap.put(50, 0);
-
-                    int total = 0;
-                    for (SAMToolsDepthInterval samtoolsDepthInterval : samtoolsDepthIntervals) {
-                        if (!gatkDepthInterval.getContig().equals(samtoolsDepthInterval.getContig())) {
-                            continue;
-                        }
-                        if (!gatkDepthInterval.getPositionRange().contains(samtoolsDepthInterval.getPosition())) {
-                            continue;
-                        }
-
-                        total += samtoolsDepthInterval.getCoverage();
-
-                        for (Integer key : percentageMap.keySet()) {
-                            if (samtoolsDepthInterval.getCoverage() >= key) {
-                                percentageMap.put(key, percentageMap.get(key) + 1);
-                            }
-                        }
-
-                    }
-                    gatkDepthInterval.setTotalCoverage(total);
-                    gatkDepthInterval
-                            .setAverageCoverage(Double.valueOf(1D * gatkDepthInterval.getTotalCoverage() / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove1(Double.valueOf(100D * percentageMap.get(1) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove2(Double.valueOf(100D * percentageMap.get(2) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove5(Double.valueOf(100D * percentageMap.get(5) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove8(Double.valueOf(100D * percentageMap.get(8) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove10(Double.valueOf(100D * percentageMap.get(10) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove15(Double.valueOf(100D * percentageMap.get(15) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove20(Double.valueOf(100D * percentageMap.get(20) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove30(Double.valueOf(100D * percentageMap.get(30) / gatkDepthInterval.getLength()));
-                    gatkDepthInterval.setSamplePercentAbove50(Double.valueOf(100D * percentageMap.get(50) / gatkDepthInterval.getLength()));
-
-                });
-            }
-            es.shutdown();
-            es.awaitTermination(1, TimeUnit.HOURS);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-
+        // this has been done in the mapseq
     }
 
     public static void main(String[] args) {
