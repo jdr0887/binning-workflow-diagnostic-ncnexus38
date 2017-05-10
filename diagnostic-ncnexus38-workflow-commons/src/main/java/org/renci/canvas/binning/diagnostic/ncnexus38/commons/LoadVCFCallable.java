@@ -61,10 +61,21 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
     }
 
     @Override
-    public GenomeRef getGenomeRef() {
+    public GenomeRef getDefaultGenomeRef() {
         GenomeRef genomeRef = null;
         try {
             genomeRef = getDaoBean().getGenomeRefDAO().findById(4);
+        } catch (CANVASDAOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return genomeRef;
+    }
+
+    @Override
+    public GenomeRef getLiftOverGenomeRef() {
+        GenomeRef genomeRef = null;
+        try {
+            genomeRef = getDaoBean().getGenomeRefDAO().findById(2);
         } catch (CANVASDAOException e) {
             logger.error(e.getMessage(), e);
         }
