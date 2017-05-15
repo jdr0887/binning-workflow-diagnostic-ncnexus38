@@ -132,13 +132,14 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
 
                             });
 
-                            es.shutdown();
-                            es.awaitTermination(1L, TimeUnit.HOURS);
-
                         }
 
                     }
 
+                }
+                es.shutdown();
+                if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
+                    es.shutdownNow();
                 }
 
             }
