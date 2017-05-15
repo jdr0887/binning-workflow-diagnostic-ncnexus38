@@ -34,10 +34,8 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
     }
 
     @Override
-    public List<MaxFrequency> call() throws BinningException {
+    public Void call() throws BinningException {
         logger.debug("ENTERING call()");
-        List<MaxFrequency> results = new ArrayList<>();
-
         try {
 
             DiagnosticResultVersion diagnosticResultVersion = getDaoBean().getDiagnosticResultVersionDAO()
@@ -54,11 +52,9 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
 
-                ExecutorService es = Executors.newFixedThreadPool(2);
+                ExecutorService es = Executors.newFixedThreadPool(4);
 
                 for (LocatedVariant locatedVariant : locatedVariantList) {
-
-                    logger.info(locatedVariant.toString());
 
                     List<CanonicalAllele> foundCanonicalAlleles = getDaoBean().getCanonicalAlleleDAO()
                             .findByLocatedVariantId(locatedVariant.getId());
@@ -70,9 +66,14 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                 .filter(a -> a.getGenomeRef().getId().equals(2)).findAny();
                         if (optionalLVFrom37.isPresent()) {
                             LocatedVariant lv = optionalLVFrom37.get();
-                            logger.info(lv.toString());
 
                             es.submit(() -> {
+
+                                logger.debug(locatedVariant.getGenomeRef().toString());
+                                logger.debug(locatedVariant.toString());
+
+                                logger.debug(lv.getGenomeRef().toString());
+                                logger.debug(lv.toString());
 
                                 try {
                                     List<SNPPopulationMaxFrequency> snpPopulationMaxFrequencyList = getDaoBean()
@@ -91,7 +92,8 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                         maxFrequency = new MaxFrequency(key, snpMaxFrequencySource);
                                         maxFrequency.setMaxAlleleFreq(snpPopulationMaxFrequencyList.get(0).getMaxAlleleFrequency());
                                         maxFrequency.setLocatedVariant(locatedVariant);
-                                        results.add(maxFrequency);
+                                        logger.info(maxFrequency.toString());
+                                        getDaoBean().getMaxFrequencyDAO().save(maxFrequency);
                                         return;
                                     }
 
@@ -109,7 +111,8 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                         maxFrequency = new MaxFrequency(key, indelMaxFrequencySource);
                                         maxFrequency.setMaxAlleleFreq(indelMaxFrequencyList.get(0).getMaxAlleleFrequency());
                                         maxFrequency.setLocatedVariant(locatedVariant);
-                                        results.add(maxFrequency);
+                                        logger.info(maxFrequency.toString());
+                                        getDaoBean().getMaxFrequencyDAO().save(maxFrequency);
                                         return;
                                     }
 
@@ -124,10 +127,11 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                         maxFrequency = new MaxFrequency(key, noneMaxFrequencySource);
                                         maxFrequency.setMaxAlleleFreq(0D);
                                         maxFrequency.setLocatedVariant(locatedVariant);
-                                        results.add(maxFrequency);
+                                        logger.info(maxFrequency.toString());
+                                        getDaoBean().getMaxFrequencyDAO().save(maxFrequency);
                                     }
                                 } catch (CANVASDAOException e) {
-                                    e.printStackTrace();
+                                    logger.error(e.getMessage(), e);
                                 }
 
                             });
@@ -149,7 +153,7 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
             throw new BinningException(e);
         }
 
-        return results;
+        return null;
     }
 
     public static void main(String[] args) {

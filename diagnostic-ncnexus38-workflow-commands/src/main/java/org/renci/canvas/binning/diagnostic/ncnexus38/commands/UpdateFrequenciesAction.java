@@ -47,16 +47,7 @@ public class UpdateFrequenciesAction implements Action {
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Updating frequency table"));
                 daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
-                List<MaxFrequency> results = Executors.newSingleThreadExecutor()
-                        .submit(new UpdateFrequenciesCallable(daoBeanService, binningJob)).get();
-
-                if (CollectionUtils.isNotEmpty(results)) {
-                    logger.info(String.format("saving %d new MaxFrequency instances", results.size()));
-                    for (MaxFrequency maxFrequency : results) {
-                        logger.info(maxFrequency.toString());
-                        daoBeanService.getMaxFrequencyDAO().save(maxFrequency);
-                    }
-                }
+                Executors.newSingleThreadExecutor().submit(new UpdateFrequenciesCallable(daoBeanService, binningJob)).get();
 
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Updated frequency table"));
                 daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
