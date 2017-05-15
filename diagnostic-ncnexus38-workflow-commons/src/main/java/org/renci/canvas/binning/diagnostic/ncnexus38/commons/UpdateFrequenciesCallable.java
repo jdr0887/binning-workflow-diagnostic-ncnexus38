@@ -76,8 +76,8 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
 
                                 try {
                                     List<SNPPopulationMaxFrequency> snpPopulationMaxFrequencyList = getDaoBean()
-                                            .getSNPPopulationMaxFrequencyDAO().findByLocatedVariantIdAndVersion(locatedVariant.getId(),
-                                                    diagnosticResultVersion.getGen1000SnpVersion());
+                                            .getSNPPopulationMaxFrequencyDAO()
+                                            .findByLocatedVariantIdAndVersion(lv.getId(), diagnosticResultVersion.getGen1000SnpVersion());
 
                                     if (CollectionUtils.isNotEmpty(snpPopulationMaxFrequencyList)) {
 
@@ -96,8 +96,7 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                     }
 
                                     List<IndelMaxFrequency> indelMaxFrequencyList = getDaoBean().getIndelMaxFrequencyDAO()
-                                            .findByLocatedVariantIdAndVersion(locatedVariant.getId(),
-                                                    diagnosticResultVersion.getGen1000IndelVersion());
+                                            .findByLocatedVariantIdAndVersion(lv.getId(), diagnosticResultVersion.getGen1000IndelVersion());
 
                                     if (CollectionUtils.isNotEmpty(indelMaxFrequencyList)) {
                                         MaxFrequencyPK key = new MaxFrequencyPK(locatedVariant.getId(),
