@@ -94,7 +94,8 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                         .findByListVersionAndChromosomeAndRange(getBinningJob().getListVersion(), chromosome, start, end);
                 if (CollectionUtils.isNotEmpty(dxExonList)) {
 
-                    ExecutorService es = Executors.newFixedThreadPool(4);
+                    ExecutorService es = Executors.newFixedThreadPool(6);
+
                     for (DXExons dxExon : dxExonList) {
                         es.submit(() -> {
 
@@ -126,7 +127,9 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                         });
                     }
                     es.shutdown();
-                    es.awaitTermination(1L, TimeUnit.HOURS);
+                    if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
+                        es.shutdownNow();
+                    }
                 }
 
             }
