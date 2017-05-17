@@ -17,7 +17,11 @@
     <dependency>
       <groupId>org.renci.canvas.binning</groupId>
       <artifactId>binning-core</artifactId>
-    </dependency>          
+    </dependency>
+    <dependency>
+      <groupId>org.renci.gerese4j</groupId>
+      <artifactId>gerese4j-core</artifactId>
+    </dependency>              
   </dependencies>
   <build>
     <plugins>
