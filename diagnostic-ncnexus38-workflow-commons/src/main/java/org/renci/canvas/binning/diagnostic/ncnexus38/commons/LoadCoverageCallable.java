@@ -71,7 +71,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
             SortedSet<GATKDepthInterval> allIntervalSet = new TreeSet<GATKDepthInterval>();
 
-            File depthFile = getDepthFile(getBinningJob().getParticipant(), getBinningJob().getListVersion());
+            File depthFile = getDepthFile(getBinningJob().getParticipant(), getBinningJob().getDiagnosticResultVersion().getId());
             try (Stream<String> stream = Files.lines(depthFile.toPath())) {
                 stream.forEach(a -> {
                     if (!a.startsWith("Target")) {
@@ -90,8 +90,8 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                     end = start;
                 }
 
-                List<DXExons> dxExonList = getDaoBean().getDXExonsDAO()
-                        .findByListVersionAndChromosomeAndRange(getBinningJob().getListVersion(), chromosome, start, end);
+                List<DXExons> dxExonList = getDaoBean().getDXExonsDAO().findByListVersionAndChromosomeAndRange(
+                        getBinningJob().getDiagnosticResultVersion().getId(), chromosome, start, end);
                 if (CollectionUtils.isNotEmpty(dxExonList)) {
 
                     ExecutorService es = Executors.newFixedThreadPool(6);

@@ -38,8 +38,7 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
         logger.debug("ENTERING call()");
         try {
 
-            DiagnosticResultVersion diagnosticResultVersion = getDaoBean().getDiagnosticResultVersionDAO()
-                    .findById(getBinningJob().getListVersion());
+            DiagnosticResultVersion diagnosticResultVersion = getBinningJob().getDiagnosticResultVersion();
             logger.info(diagnosticResultVersion.toString());
 
             MaxFrequencySource snpMaxFrequencySource = getDaoBean().getMaxFrequencySourceDAO().findById("snp");

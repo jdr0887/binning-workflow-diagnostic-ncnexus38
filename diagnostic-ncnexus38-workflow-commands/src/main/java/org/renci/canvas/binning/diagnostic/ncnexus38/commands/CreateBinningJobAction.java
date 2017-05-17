@@ -55,7 +55,8 @@ public class CreateBinningJobAction implements Action {
 
         binningJob.setGender(gender);
         binningJob.setParticipant(participant);
-        binningJob.setListVersion(listVersion);
+
+        binningJob.setDiagnosticResultVersion(daoBeanService.getDiagnosticResultVersionDAO().findById(listVersion));
 
         if (StringUtils.isNotEmpty(vcf)) {
             File vcfFile = new File(vcf);
