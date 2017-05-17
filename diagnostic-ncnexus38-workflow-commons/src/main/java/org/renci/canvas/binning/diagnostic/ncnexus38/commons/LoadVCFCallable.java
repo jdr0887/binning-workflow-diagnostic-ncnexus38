@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
 import org.renci.canvas.binning.core.BinningException;
 import org.renci.canvas.binning.core.IRODSUtils;
 import org.renci.canvas.binning.core.diagnostic.AbstractLoadVCFCallable;
@@ -20,6 +22,8 @@ import org.renci.canvas.dao.jpa.CANVASDAOManager;
 import org.renci.canvas.dao.ref.model.GenomeRef;
 import org.renci.canvas.dao.ref.model.GenomeRefSeq;
 import org.renci.canvas.dao.var.model.LocatedVariant;
+import org.renci.gerese4j.core.GeReSe4jBuild;
+import org.renci.gerese4j.core.impl.GeReSe4jBuild_37_3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,8 +111,21 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
                 if (!optionalGenomeRefSeq.isPresent()) {
                     throw new BinningException("GenomeRefSeq not found");
                 }
-                ret = new LocatedVariant(genomeRef4LiftOver, optionalGenomeRefSeq.get(), loInterval.getStart(), loInterval.getEnd(),
-                        locatedVariant.getVariantType(), locatedVariant.getRef(), locatedVariant.getSeq());
+
+                if (interval.length() != loInterval.length()) {
+                    return null;
+                }
+
+                GenomeRefSeq liftOverGenomeRefSeq = optionalGenomeRefSeq.get();
+
+                GeReSe4jBuild gereseq4jMgr = GeReSe4jBuild_37_3.getInstance();
+                String referenceSequence = gereseq4jMgr.getRegion(liftOverGenomeRefSeq.getId(),
+                        Range.between(loInterval.getStart(), loInterval.getEnd()), true);
+                if (StringUtils.isNotEmpty(referenceSequence) && locatedVariant.getRef().equals(referenceSequence)) {
+                    ret = new LocatedVariant(genomeRef4LiftOver, liftOverGenomeRefSeq, loInterval.getStart(), loInterval.getEnd(),
+                            locatedVariant.getVariantType(), locatedVariant.getRef(), locatedVariant.getSeq());
+                }
+
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
