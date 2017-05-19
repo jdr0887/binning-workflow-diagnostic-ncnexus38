@@ -51,6 +51,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
         logger.debug("ENTERING getDepthFile(String, Integer)");
         Map<String, String> avuMap = new HashMap<String, String>();
         avuMap.put("ParticipantId", participant);
+        avuMap.put("DxVersion", listVersion.toString());
         avuMap.put("MaPSeqWorkflowName", "NCNEXUS38DX");
         avuMap.put("MaPSeqJobName", "SAMToolsDepthToGATKDOCFormatConverter");
         avuMap.put("MaPSeqMimeType", "TEXT_PLAIN");
