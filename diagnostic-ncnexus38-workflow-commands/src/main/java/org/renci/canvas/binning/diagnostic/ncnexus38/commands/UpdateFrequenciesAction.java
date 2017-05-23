@@ -1,10 +1,8 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commands;
 
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
@@ -14,7 +12,6 @@ import org.renci.canvas.binning.diagnostic.ncnexus38.commons.UpdateFrequenciesCa
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.canvas.dao.clinbin.model.MaxFrequency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
