@@ -95,7 +95,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                         getBinningJob().getDiagnosticResultVersion().getId(), chromosome, start, end);
                 if (CollectionUtils.isNotEmpty(dxExonList)) {
 
-                    ExecutorService es = Executors.newFixedThreadPool(6);
+                    ExecutorService es = Executors.newFixedThreadPool(4);
 
                     for (DXExons dxExon : dxExonList) {
                         es.submit(() -> {
