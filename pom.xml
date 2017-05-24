@@ -2,7 +2,7 @@
   <parent>
     <groupId>org.renci.canvas</groupId>
     <artifactId>binning</artifactId>
-    <version>0.0.92</version>
+    <version>0.0.94</version>
   </parent>
   <name>CANVAS :: Binning :: Diagnostic NCNEXUS38 Workflow</name>
   <modelVersion>4.0.0</modelVersion>
