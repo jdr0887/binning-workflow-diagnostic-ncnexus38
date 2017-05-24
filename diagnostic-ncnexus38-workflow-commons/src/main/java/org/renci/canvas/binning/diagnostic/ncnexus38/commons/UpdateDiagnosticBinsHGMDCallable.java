@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.renci.canvas.binning.core.BinningException;
-import org.renci.canvas.binning.core.grch37.diagnostic.AbstractUpdateDiagnosticBinsCallable;
 import org.renci.canvas.binning.core.grch38.BinResultsFinalDiagnosticFactory;
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
@@ -44,9 +43,16 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
         try {
 
             BinResultsFinalDiagnosticFactory binResultsFinalDiagnosticFactory = BinResultsFinalDiagnosticFactory.getInstance(daoBean);
-
-            logger.info("Deleting BinResultsFinalDiagnostic instances by assembly id = {}", binningJob.getAssembly().getId());
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyId(binningJob.getAssembly().getId());
+            
+            logger.info("Deleting BinResultsFinalDiagnostic instances by assembly id");
+            logger.info(binningJob.getAssembly().toString());
+            
+            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 1);
+            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 2);
+            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 3);
+            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 4);
+            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 5);
+            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 6);
 
             List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO().findByAssemblyId(binningJob.getAssembly().getId());
 
