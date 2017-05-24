@@ -43,10 +43,10 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
         try {
 
             BinResultsFinalDiagnosticFactory binResultsFinalDiagnosticFactory = BinResultsFinalDiagnosticFactory.getInstance(daoBean);
-            
+
             logger.info("Deleting BinResultsFinalDiagnostic instances by assembly id");
             logger.info(binningJob.getAssembly().toString());
-            
+
             daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 1);
             daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 2);
             daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 3);
@@ -60,11 +60,23 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
 
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
+                ExecutorService es = Executors.newFixedThreadPool(4);
                 for (LocatedVariant locatedVariant : locatedVariantList) {
-                    List<Variants_80_4> foundVariants = daoBean.getVariants_80_4_DAO().findByLocatedVariantId(locatedVariant.getId());
-                    if (CollectionUtils.isNotEmpty(foundVariants)) {
-                        variants.addAll(foundVariants);
-                    }
+                    es.submit(() -> {
+                        try {
+                            List<Variants_80_4> foundVariants = daoBean.getVariants_80_4_DAO()
+                                    .findByLocatedVariantId(locatedVariant.getId());
+                            if (CollectionUtils.isNotEmpty(foundVariants)) {
+                                variants.addAll(foundVariants);
+                            }
+                        } catch (CANVASDAOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
+                }
+                es.shutdown();
+                if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
+                    es.shutdownNow();
                 }
             }
 

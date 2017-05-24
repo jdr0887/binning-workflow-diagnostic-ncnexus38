@@ -60,11 +60,23 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
 
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
+                ExecutorService es = Executors.newFixedThreadPool(4);
                 for (LocatedVariant locatedVariant : locatedVariantList) {
-                    List<Variants_80_4> foundVariants = daoBean.getVariants_80_4_DAO().findByLocatedVariantId(locatedVariant.getId());
-                    if (CollectionUtils.isNotEmpty(foundVariants)) {
-                        variants.addAll(foundVariants);
-                    }
+                    es.submit(() -> {
+                        try {
+                            List<Variants_80_4> foundVariants = daoBean.getVariants_80_4_DAO()
+                                    .findByLocatedVariantId(locatedVariant.getId());
+                            if (CollectionUtils.isNotEmpty(foundVariants)) {
+                                variants.addAll(foundVariants);
+                            }
+                        } catch (CANVASDAOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    });
+                }
+                es.shutdown();
+                if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
+                    es.shutdownNow();
                 }
             }
 
