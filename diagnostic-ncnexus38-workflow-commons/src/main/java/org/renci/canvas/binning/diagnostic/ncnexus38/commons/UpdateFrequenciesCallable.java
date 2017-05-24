@@ -52,30 +52,30 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
 
-                ExecutorService es = Executors.newFixedThreadPool(6);
+                ExecutorService es = Executors.newFixedThreadPool(4);
 
                 for (LocatedVariant locatedVariant : locatedVariantList) {
 
-                    List<CanonicalAllele> foundCanonicalAlleles = getDaoBean().getCanonicalAlleleDAO()
-                            .findByLocatedVariantId(locatedVariant.getId());
+                    es.submit(() -> {
 
-                    if (CollectionUtils.isNotEmpty(foundCanonicalAlleles)) {
-                        CanonicalAllele ca = foundCanonicalAlleles.get(0);
+                        try {
+                            List<CanonicalAllele> foundCanonicalAlleles = getDaoBean().getCanonicalAlleleDAO()
+                                    .findByLocatedVariantId(locatedVariant.getId());
 
-                        Optional<LocatedVariant> optionalLVFrom37 = ca.getLocatedVariants().stream()
-                                .filter(a -> a.getGenomeRef().getId().equals(2)).findAny();
-                        if (optionalLVFrom37.isPresent()) {
-                            LocatedVariant lv = optionalLVFrom37.get();
+                            if (CollectionUtils.isNotEmpty(foundCanonicalAlleles)) {
+                                CanonicalAllele ca = foundCanonicalAlleles.get(0);
 
-                            es.submit(() -> {
+                                Optional<LocatedVariant> optionalLVFrom37 = ca.getLocatedVariants().stream()
+                                        .filter(a -> a.getGenomeRef().getId().equals(2)).findAny();
+                                if (optionalLVFrom37.isPresent()) {
+                                    LocatedVariant lv = optionalLVFrom37.get();
 
-                                logger.debug(locatedVariant.getGenomeRef().toString());
-                                logger.debug(locatedVariant.toString());
+                                    logger.debug(locatedVariant.getGenomeRef().toString());
+                                    logger.debug(locatedVariant.toString());
 
-                                logger.debug(lv.getGenomeRef().toString());
-                                logger.debug(lv.toString());
+                                    logger.debug(lv.getGenomeRef().toString());
+                                    logger.debug(lv.toString());
 
-                                try {
                                     SNPPopulationMaxFrequency snpPopulationMaxFrequency = getDaoBean().getSNPPopulationMaxFrequencyDAO()
                                             .findById(new SNPPopulationMaxFrequencyPK(lv.getId(),
                                                     diagnosticResultVersion.getGen1000SnpVersion()));
@@ -123,16 +123,15 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                             getDaoBean().getMaxFrequencyDAO().save(maxFrequency);
                                         }
                                     }
-                                } catch (CANVASDAOException e) {
-                                    logger.error(e.getMessage(), e);
+
                                 }
 
-                            });
-
+                            }
+                        } catch (CANVASDAOException e) {
+                            logger.error(e.getMessage(), e);
                         }
 
-                    }
-
+                    });
                 }
                 es.shutdown();
                 if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
