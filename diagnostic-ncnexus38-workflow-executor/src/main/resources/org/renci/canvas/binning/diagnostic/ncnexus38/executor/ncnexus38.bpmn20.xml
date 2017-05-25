@@ -15,40 +15,42 @@
 
     <parallelGateway id="fork" activiti:async="true" />
 
+    <serviceTask id="loadCoverage" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate"
+      activiti:async="true" activiti:exclusive="false" />
+    <serviceTask id="updateFrequencies" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate"
+      activiti:async="true" activiti:exclusive="false" />
+
     <sequenceFlow sourceRef="fork" targetRef="loadCoverage" />
     <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" />
 
-    <serviceTask id="loadCoverage" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate"
-      activiti:async="true" activiti:exclusive="false" />
-    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
+    <parallelGateway id="join" activiti:async="true" />
 
-    <serviceTask id="updateFrequencies" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate"
-      activiti:async="true" activiti:exclusive="false" />
+    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
     <sequenceFlow sourceRef="updateFrequencies" targetRef="join" />
 
-    <parallelGateway id="join" />
+    <serviceTask id="annotateVariants" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" />
     <sequenceFlow sourceRef="join" targetRef="annotateVariants" />
 
-    <serviceTask id="annotateVariants" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" />
     <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsFork" />
 
     <parallelGateway id="updateDiagnosticBinsFork" activiti:async="true" />
 
+    <serviceTask id="updateDiagnosticBinsHGMD" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsHGMDDelegate"
+      activiti:async="true" activiti:exclusive="false" />
+    <serviceTask id="updateDiagnosticBinsClinVar" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsClinVarDelegate"
+      activiti:async="true" activiti:exclusive="false" />
+
     <sequenceFlow sourceRef="updateDiagnosticBinsFork" targetRef="updateDiagnosticBinsHGMD" />
     <sequenceFlow sourceRef="updateDiagnosticBinsFork" targetRef="updateDiagnosticBinsClinVar" />
 
-    <serviceTask id="updateDiagnosticBinsHGMD" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsHGMDDelegate"
-      activiti:async="true" activiti:exclusive="false" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsJoin" />
+    <parallelGateway id="updateDiagnosticBinsJoin" activiti:async="true" />
 
-    <serviceTask id="updateDiagnosticBinsClinVar" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsClinVarDelegate"
-      activiti:async="true" activiti:exclusive="false" />
+    <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsJoin" />
     <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="updateDiagnosticBinsJoin" />
 
-    <parallelGateway id="updateDiagnosticBinsJoin" />
+    <serviceTask id="generateReport" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.GenerateReportDelegate" />
     <sequenceFlow sourceRef="updateDiagnosticBinsJoin" targetRef="generateReport" />
 
-    <serviceTask id="generateReport" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.GenerateReportDelegate" />
     <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
 
     <serviceTask id="finalize" activiti:class="org.renci.canvas.binning.core.diagnostic.FinalizeDelegate" />
