@@ -1,5 +1,6 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -46,12 +47,21 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
             logger.info("Deleting BinResultsFinalDiagnostic instances by assembly id");
             logger.info(binningJob.getAssembly().toString());
 
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), 1);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), 2);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), 3);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), 4);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), 5);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), 6);
+            ExecutorService prepES = Executors.newFixedThreadPool(2);
+            for (Integer diseaseClassId : Arrays.asList(1, 2, 3, 4, 5, 6)) {
+                prepES.submit(() -> {
+                    try {
+                        daoBean.getBinResultsFinalDiagnosticDAO()
+                                .deleteByAssemblyIdAndClinVarDiseaseClassId(binningJob.getAssembly().getId(), diseaseClassId);
+                    } catch (CANVASDAOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                });
+            }
+            prepES.shutdown();
+            if (!prepES.awaitTermination(15L, TimeUnit.MINUTES)) {
+                prepES.shutdownNow();
+            }
 
             List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO().findByAssemblyId(binningJob.getAssembly().getId());
 
@@ -93,6 +103,7 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // clinvar - likely pathogenic(2)
@@ -106,6 +117,7 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // clinvar - possibly pathogenic(3)
@@ -119,6 +131,7 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // clinvar - uncertain significance(4)
@@ -132,6 +145,7 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // clinvar - likely benign(5)
@@ -145,6 +159,7 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // clinvar almost certainly benign(6)
@@ -158,6 +173,7 @@ public class UpdateDiagnosticBinsClinVarCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                         }

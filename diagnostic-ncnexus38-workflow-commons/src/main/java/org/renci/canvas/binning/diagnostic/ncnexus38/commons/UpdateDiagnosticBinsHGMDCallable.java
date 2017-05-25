@@ -1,5 +1,6 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -46,18 +47,27 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
             logger.info("Deleting BinResultsFinalDiagnostic instances by assembly id");
             logger.info(binningJob.getAssembly().toString());
 
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 1);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 2);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 3);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 4);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 5);
-            daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(), 6);
+            ExecutorService prepES = Executors.newFixedThreadPool(2);
+            for (Integer diseaseClassId : Arrays.asList(1, 2, 3, 4, 5, 6)) {
+                prepES.submit(() -> {
+                    try {
+                        daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(),
+                                diseaseClassId);
+                    } catch (CANVASDAOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                });
+            }
+            prepES.shutdown();
+            if (!prepES.awaitTermination(15L, TimeUnit.MINUTES)) {
+                prepES.shutdownNow();
+            }
 
             List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO().findByAssemblyId(binningJob.getAssembly().getId());
 
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
-                
+
                 ExecutorService es = Executors.newFixedThreadPool(4);
                 for (LocatedVariant locatedVariant : locatedVariantList) {
 
@@ -79,6 +89,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                         CanonicalAllele canonicalAllele = foundCanonicalAlleles.get(0);
                                         Optional<LocatedVariant> optionalLocatedVariant = canonicalAllele.getLocatedVariants().stream()
                                                 .filter(a -> a.getGenomeRef().getId().equals(2)).findAny();
+
                                         if (optionalLocatedVariant.isPresent()) {
 
                                             // we done't have hgmd data for 38, get from 37
@@ -96,6 +107,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // hgmd - likely pathogenic(2)
@@ -109,6 +121,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // hgmd - possibly pathogenic(3)
@@ -122,6 +135,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // hgmd - uncertain significance(4)
@@ -135,6 +149,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // hgmd - likely benign(5)
@@ -148,6 +163,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                             // hgmd almost certainly benign(6)
@@ -161,6 +177,7 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
                                                 }
+                                                continue;
                                             }
 
                                         }
