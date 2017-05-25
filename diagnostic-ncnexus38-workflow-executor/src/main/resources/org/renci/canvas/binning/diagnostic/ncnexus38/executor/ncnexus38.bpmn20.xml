@@ -5,58 +5,41 @@
   <process id="ncnexus38_diagnostic_binning" name="NCNEXUS38DiagnosticBinning">
 
     <startEvent id="start" />
-    <sequenceFlow sourceRef="start" targetRef="initialize" />
-
     <serviceTask id="initialize" activiti:class="org.renci.canvas.binning.core.diagnostic.InitializeDelegate" />
-    <sequenceFlow sourceRef="initialize" targetRef="loadVCF" />
-
     <serviceTask id="loadVCF" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadVCFDelegate" />
-    <sequenceFlow sourceRef="loadVCF" targetRef="fork" />
-
-    <parallelGateway id="fork" activiti:async="true" />
-
     <serviceTask id="loadCoverage" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate"
       activiti:async="true" activiti:exclusive="false" />
     <serviceTask id="updateFrequencies" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate"
       activiti:async="true" activiti:exclusive="false" />
-
-    <sequenceFlow sourceRef="fork" targetRef="loadCoverage" />
-    <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" />
-
-    <parallelGateway id="join" activiti:async="true" />
-
-    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
-    <sequenceFlow sourceRef="updateFrequencies" targetRef="join" />
-
     <serviceTask id="annotateVariants" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" />
-    <sequenceFlow sourceRef="join" targetRef="annotateVariants" />
-
-    <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsFork" />
-
-    <parallelGateway id="updateDiagnosticBinsFork" activiti:async="true" />
-
     <serviceTask id="updateDiagnosticBinsHGMD" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsHGMDDelegate"
       activiti:async="true" activiti:exclusive="false" />
     <serviceTask id="updateDiagnosticBinsClinVar" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsClinVarDelegate"
       activiti:async="true" activiti:exclusive="false" />
+    <serviceTask id="generateReport" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.GenerateReportDelegate" />
+    <serviceTask id="finalize" activiti:class="org.renci.canvas.binning.core.diagnostic.FinalizeDelegate" />
+    <endEvent id="end" />
 
+    <sequenceFlow sourceRef="start" targetRef="initialize" />
+    <sequenceFlow sourceRef="initialize" targetRef="loadVCF" />
+    <sequenceFlow sourceRef="loadVCF" targetRef="fork" />
+    <parallelGateway id="fork" activiti:async="true" />
+    <sequenceFlow sourceRef="fork" targetRef="loadCoverage" />
+    <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" />
+    <parallelGateway id="join" activiti:async="true" />
+    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
+    <sequenceFlow sourceRef="updateFrequencies" targetRef="join" />
+    <sequenceFlow sourceRef="join" targetRef="annotateVariants" />
+    <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsFork" />
+    <parallelGateway id="updateDiagnosticBinsFork" activiti:async="true" />
     <sequenceFlow sourceRef="updateDiagnosticBinsFork" targetRef="updateDiagnosticBinsHGMD" />
     <sequenceFlow sourceRef="updateDiagnosticBinsFork" targetRef="updateDiagnosticBinsClinVar" />
-
     <parallelGateway id="updateDiagnosticBinsJoin" activiti:async="true" />
-
     <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsJoin" />
     <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="updateDiagnosticBinsJoin" />
-
-    <serviceTask id="generateReport" activiti:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.GenerateReportDelegate" />
     <sequenceFlow sourceRef="updateDiagnosticBinsJoin" targetRef="generateReport" />
-
     <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
-
-    <serviceTask id="finalize" activiti:class="org.renci.canvas.binning.core.diagnostic.FinalizeDelegate" />
     <sequenceFlow sourceRef="finalize" targetRef="end" />
-
-    <endEvent id="end" />
 
   </process>
 
