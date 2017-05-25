@@ -41,7 +41,7 @@ public class DiagnosticNCNEXUS38Task implements Runnable {
             RuntimeService runtimeService = bundleContext.getService(runtimeServiceReference);
 
             repositoryService.createDeployment()
-                    .addClasspathResource("org/renci/binning/diagnostic/ncnexus38/executor/ncnexus38.bpmn20.xml").deploy();
+                    .addClasspathResource("org/renci/canvas/binning/diagnostic/ncnexus38/executor/ncnexus38.bpmn20.xml").deploy();
 
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("binningJobId", binningJobId);
@@ -49,7 +49,7 @@ public class DiagnosticNCNEXUS38Task implements Runnable {
             ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ncnexus38_diagnostic_binning", variables);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
