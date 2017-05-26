@@ -17,8 +17,7 @@
     <serviceTask id="finalize" flowable:class="org.renci.canvas.binning.core.diagnostic.FinalizeDelegate" />
     <endEvent id="end" />
 
-    <sequenceFlow sourceRef="start" targetRef="fork" />
-    <!-- <sequenceFlow sourceRef="start" targetRef="initialize" /> -->
+    <sequenceFlow sourceRef="start" targetRef="initialize" />
     <sequenceFlow sourceRef="initialize" targetRef="loadVCF" />
     <sequenceFlow sourceRef="loadVCF" targetRef="fork" />
     <parallelGateway id="fork" />
