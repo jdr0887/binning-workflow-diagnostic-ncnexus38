@@ -95,13 +95,15 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                         getBinningJob().getDiagnosticResultVersion().getId(), chromosome, start, end);
                 if (CollectionUtils.isNotEmpty(dxExonList)) {
 
+                    logger.debug("dxExonList.size(): {}", dxExonList.size());
+
                     ExecutorService es = Executors.newFixedThreadPool(4);
 
                     for (DXExons dxExon : dxExonList) {
                         es.submit(() -> {
 
                             try {
-                                logger.info(dxExon.toString());
+                                logger.debug(dxExon.toString());
 
                                 DXCoveragePK key = new DXCoveragePK(dxExon.getId(), getBinningJob().getParticipant());
                                 DXCoverage dxCoverage = getDaoBean().getDXCoverageDAO().findById(key);
@@ -119,7 +121,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                                 dxCoverage.setFractionGreaterThan20(interval.getSamplePercentAbove20() * 0.01);
                                 dxCoverage.setFractionGreaterThan30(interval.getSamplePercentAbove30() * 0.01);
                                 dxCoverage.setFractionGreaterThan50(interval.getSamplePercentAbove50() * 0.01);
-                                logger.info(dxCoverage.toString());
+                                logger.debug(dxCoverage.toString());
                                 getDaoBean().getDXCoverageDAO().save(dxCoverage);
                             } catch (CANVASDAOException e) {
                                 logger.error(e.getMessage(), e);
