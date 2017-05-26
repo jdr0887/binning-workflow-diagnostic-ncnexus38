@@ -3,7 +3,6 @@ package org.renci.canvas.binning.diagnostic.ncnexus38.executor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.osgi.framework.BundleContext;
@@ -30,17 +29,11 @@ public class DiagnosticNCNEXUS38Task implements Runnable {
     @Override
     public void run() {
         logger.debug("ENTERING run()");
-
         try {
             BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
 
-            ServiceReference<RepositoryService> repositoryServiceReference = bundleContext.getServiceReference(RepositoryService.class);
-            RepositoryService repositoryService = bundleContext.getService(repositoryServiceReference);
-
             ServiceReference<RuntimeService> runtimeServiceReference = bundleContext.getServiceReference(RuntimeService.class);
             RuntimeService runtimeService = bundleContext.getService(runtimeServiceReference);
-
-            repositoryService.createDeployment().addClasspathResource("ncnexus38.bpmn20.xml").deploy();
 
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("binningJobId", binningJobId);
@@ -50,7 +43,6 @@ public class DiagnosticNCNEXUS38Task implements Runnable {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
     }
 
     public Integer getBinningJobId() {
