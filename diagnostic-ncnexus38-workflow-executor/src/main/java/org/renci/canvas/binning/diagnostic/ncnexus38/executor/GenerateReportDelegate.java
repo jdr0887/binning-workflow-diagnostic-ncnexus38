@@ -13,7 +13,6 @@ import org.renci.canvas.binning.diagnostic.ncnexus38.commons.GenerateReportCalla
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.canvas.dao.clinbin.model.Report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,9 +46,7 @@ public class GenerateReportDelegate implements JavaDelegate {
             daoBean.getDiagnosticBinningJobDAO().save(binningJob);
             logger.info(binningJob.toString());
 
-            Report report = Executors.newSingleThreadExecutor().submit(new GenerateReportCallable(daoBean, binningJob)).get();
-            logger.info(report.toString());
-            daoBean.getReportDAO().save(report);
+            Executors.newSingleThreadExecutor().submit(new GenerateReportCallable(daoBean, binningJob)).get();
 
             binningJob = daoBean.getDiagnosticBinningJobDAO().findById(binningJobId);
             binningJob.setStatus(daoBean.getDiagnosticStatusTypeDAO().findById("Generated Report"));

@@ -12,7 +12,6 @@ import org.renci.canvas.binning.diagnostic.ncnexus38.commons.GenerateReportCalla
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
-import org.renci.canvas.dao.clinbin.model.Report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,10 +46,7 @@ public class GenerateReportAction implements Action {
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Generating Report"));
                 daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
-                Report report = Executors.newSingleThreadExecutor().submit(new GenerateReportCallable(daoBeanService, binningJob))
-                        .get();
-                logger.info(report.toString());
-                daoBeanService.getReportDAO().save(report);
+                Executors.newSingleThreadExecutor().submit(new GenerateReportCallable(daoBeanService, binningJob)).get();
 
                 binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Generated Report"));
                 daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
@@ -66,7 +62,7 @@ public class GenerateReportAction implements Action {
                     logger.error(e1.getMessage(), e1);
                 }
             }
-            
+
             long end = System.currentTimeMillis();
             logger.info("total duration (seconds): {}", (end - start) / 1000);
 

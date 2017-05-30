@@ -2,7 +2,7 @@ package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
 import java.util.concurrent.Executors;
 
-import org.renci.canvas.binning.core.diagnostic.AbstractGenerateReportCallable;
+import org.renci.canvas.binning.core.grch38.AbstractGenerateReportCallable;
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
