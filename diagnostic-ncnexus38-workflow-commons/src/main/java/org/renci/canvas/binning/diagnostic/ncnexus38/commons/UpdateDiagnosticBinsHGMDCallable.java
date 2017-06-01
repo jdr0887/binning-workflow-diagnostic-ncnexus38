@@ -72,7 +72,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
 
                             if (CollectionUtils.isNotEmpty(variants)) {
 
-                                logger.info(String.format("variants.size(): %d", variants.size()));
+                                logger.debug("variants.size(): {}", variants.size());
 
                                 for (Variants_80_4 variant : variants) {
 
@@ -80,7 +80,9 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             .findByLocatedVariantId(variant.getLocatedVariant().getId());
 
                                     if (CollectionUtils.isNotEmpty(foundCanonicalAlleles)) {
+
                                         CanonicalAllele canonicalAllele = foundCanonicalAlleles.get(0);
+
                                         Optional<LocatedVariant> optionalLocatedVariant = canonicalAllele.getLocatedVariants().stream()
                                                 .filter(a -> a.getGenomeRef().getId().equals(2)).findAny();
 
@@ -88,7 +90,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
 
                                             // we done't have hgmd data for 38, get from 37
                                             LocatedVariant locatedVariant37 = optionalLocatedVariant.get();
-                                            logger.info(locatedVariant37.toString());
+                                            logger.debug(locatedVariant37.toString());
 
                                             List<MaxFrequency> maxFrequencyList = daoBean.getMaxFrequencyDAO()
                                                     .findByLocatedVariantId(variant.getLocatedVariant().getId());
