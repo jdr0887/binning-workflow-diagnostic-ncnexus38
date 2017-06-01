@@ -3,18 +3,19 @@ package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.renci.canvas.binning.core.BinningException;
-import org.renci.canvas.binning.core.grch38.BinResultsFinalDiagnosticFactory;
+import org.renci.canvas.binning.core.grch38.AbstractUpdateDiagnosticBinsCallable;
 import org.renci.canvas.dao.CANVASDAOBeanService;
 import org.renci.canvas.dao.CANVASDAOException;
 import org.renci.canvas.dao.clinbin.model.BinResultsFinalDiagnostic;
 import org.renci.canvas.dao.clinbin.model.DiagnosticBinningJob;
+import org.renci.canvas.dao.clinbin.model.DiagnosticGene;
+import org.renci.canvas.dao.clinbin.model.MaxFrequency;
 import org.renci.canvas.dao.jpa.CANVASDAOManager;
 import org.renci.canvas.dao.refseq.model.Variants_80_4;
 import org.renci.canvas.dao.var.model.CanonicalAllele;
@@ -22,18 +23,12 @@ import org.renci.canvas.dao.var.model.LocatedVariant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
+public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBinsCallable {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateDiagnosticBinsHGMDCallable.class);
 
-    private CANVASDAOBeanService daoBean;
-
-    private DiagnosticBinningJob binningJob;
-
-    public UpdateDiagnosticBinsHGMDCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
-        super();
-        this.daoBean = daoBean;
-        this.binningJob = binningJob;
+    public UpdateDiagnosticBinsHGMDCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob diagnosticBinningJob) {
+        super(daoBean, diagnosticBinningJob);
     }
 
     @Override
@@ -42,17 +37,15 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
 
         try {
 
-            BinResultsFinalDiagnosticFactory binResultsFinalDiagnosticFactory = BinResultsFinalDiagnosticFactory.getInstance(daoBean);
-
             logger.info("Deleting BinResultsFinalDiagnostic instances by assembly id");
-            logger.info(binningJob.getAssembly().toString());
+            logger.info(diagnosticBinningJob.getAssembly().toString());
 
             ExecutorService prepES = Executors.newFixedThreadPool(2);
             for (Integer diseaseClassId : Arrays.asList(1, 2, 3, 4, 5, 6)) {
                 prepES.submit(() -> {
                     try {
-                        daoBean.getBinResultsFinalDiagnosticDAO().deleteByAssemblyIdAndHGMDDiseaseClassId(binningJob.getAssembly().getId(),
-                                diseaseClassId);
+                        daoBean.getBinResultsFinalDiagnosticDAO()
+                                .deleteByAssemblyIdAndHGMDDiseaseClassId(diagnosticBinningJob.getAssembly().getId(), diseaseClassId);
                     } catch (CANVASDAOException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -63,7 +56,8 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                 prepES.shutdownNow();
             }
 
-            List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO().findByAssemblyId(binningJob.getAssembly().getId());
+            List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO()
+                    .findByAssemblyId(diagnosticBinningJob.getAssembly().getId());
 
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
@@ -96,9 +90,30 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                             LocatedVariant locatedVariant37 = optionalLocatedVariant.get();
                                             logger.info(locatedVariant37.toString());
 
+                                            List<MaxFrequency> maxFrequencyList = daoBean.getMaxFrequencyDAO()
+                                                    .findByLocatedVariantId(variant.getLocatedVariant().getId());
+
+                                            if (CollectionUtils.isEmpty(maxFrequencyList)) {
+                                                // if no MaxFrequency...can't bin
+                                                continue;
+                                            }
+
+                                            MaxFrequency maxFrequency = maxFrequencyList.get(0);
+                                            logger.debug(maxFrequency.toString());
+
+                                            List<DiagnosticGene> diagnosticGeneList = daoBean.getDiagnosticGeneDAO()
+                                                    .findByGeneIdAndDXId(variant.getGene().getId(), diagnosticBinningJob.getDx().getId());
+                                            if (CollectionUtils.isEmpty(diagnosticGeneList)) {
+                                                // if doesn't match a DiagnosticGene...don't use it
+                                                continue;
+                                            }
+
+                                            DiagnosticGene diagnosticGene = diagnosticGeneList.get(0);
+                                            logger.debug(diagnosticGene.toString());
+
                                             // hgmd - known pathogenic(1)
-                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binResultsFinalDiagnosticFactory
-                                                    .findHGMDKnownPathogenic(binningJob, variant, locatedVariant37);
+                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = findHGMDKnownPathogenic(variant,
+                                                    locatedVariant37, maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
                                                         .getBinResultsFinalDiagnosticDAO()
@@ -106,13 +121,23 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                } else {
+                                                    // just update with just hgmd values
+                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
+                                                            .get(0);
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
+                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
+                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
 
                                             // hgmd - likely pathogenic(2)
-                                            binResultsFinalDiagnostic = binResultsFinalDiagnosticFactory
-                                                    .findHGMDLikelyPathogenic(binningJob, variant, locatedVariant37);
+                                            binResultsFinalDiagnostic = findHGMDLikelyPathogenic(variant, locatedVariant37, maxFrequency,
+                                                    diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
                                                         .getBinResultsFinalDiagnosticDAO()
@@ -120,13 +145,23 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                } else {
+                                                    // just update with just hgmd values
+                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
+                                                            .get(0);
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
+                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
+                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
 
                                             // hgmd - possibly pathogenic(3)
-                                            binResultsFinalDiagnostic = binResultsFinalDiagnosticFactory
-                                                    .findHGMDPossiblyPathogenic(binningJob, variant, locatedVariant37);
+                                            binResultsFinalDiagnostic = findHGMDPossiblyPathogenic(variant, locatedVariant37, maxFrequency,
+                                                    diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
                                                         .getBinResultsFinalDiagnosticDAO()
@@ -134,13 +169,23 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                } else {
+                                                    // just update with just hgmd values
+                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
+                                                            .get(0);
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
+                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
+                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
 
                                             // hgmd - uncertain significance(4)
-                                            binResultsFinalDiagnostic = binResultsFinalDiagnosticFactory
-                                                    .findHGMDUncertainSignificance(binningJob, variant, locatedVariant37);
+                                            binResultsFinalDiagnostic = findHGMDUncertainSignificance(variant, locatedVariant37,
+                                                    maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
                                                         .getBinResultsFinalDiagnosticDAO()
@@ -148,13 +193,23 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                } else {
+                                                    // just update with just hgmd values
+                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
+                                                            .get(0);
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
+                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
+                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
 
                                             // hgmd - likely benign(5)
-                                            binResultsFinalDiagnostic = binResultsFinalDiagnosticFactory.findHGMDLikelyBenign(binningJob,
-                                                    variant, locatedVariant37);
+                                            binResultsFinalDiagnostic = findHGMDLikelyBenign(variant, locatedVariant37, maxFrequency,
+                                                    diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
                                                         .getBinResultsFinalDiagnosticDAO()
@@ -162,13 +217,23 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                } else {
+                                                    // just update with just hgmd values
+                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
+                                                            .get(0);
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
+                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
+                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
 
                                             // hgmd almost certainly benign(6)
-                                            binResultsFinalDiagnostic = binResultsFinalDiagnosticFactory
-                                                    .findHGMDAlmostCertainlyBenign(binningJob, variant, locatedVariant37);
+                                            binResultsFinalDiagnostic = findHGMDAlmostCertainlyBenign(variant, locatedVariant37,
+                                                    maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
                                                         .getBinResultsFinalDiagnosticDAO()
@@ -176,6 +241,16 @@ public class UpdateDiagnosticBinsHGMDCallable implements Callable<Void> {
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
                                                     logger.info(binResultsFinalDiagnostic.toString());
                                                     daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                } else {
+                                                    // just update with just hgmd values
+                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
+                                                            .get(0);
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
+                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
+                                                    foundBinResultsFinalDiagnostic
+                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
+                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
