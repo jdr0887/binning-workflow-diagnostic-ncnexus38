@@ -71,7 +71,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                             List<Variants_80_4> variants = daoBean.getVariants_80_4_DAO().findByLocatedVariantId(locatedVariant.getId());
                             if (CollectionUtils.isNotEmpty(variants)) {
 
-                                logger.info("variants.size(): {}", variants.size());
+                                logger.debug("variants.size(): {}", variants.size());
 
                                 for (Variants_80_4 variant : variants) {
 
@@ -89,7 +89,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
 
                                             // we done't have hgmd data for 38, get from 37
                                             LocatedVariant locatedVariant37 = optionalLocatedVariant.get();
-                                            logger.info(locatedVariant37.toString());
+                                            logger.debug(locatedVariant37.toString());
 
                                             List<MaxFrequency> maxFrequencyList = daoBean.getMaxFrequencyDAO()
                                                     .findByLocatedVariantId(variant.getLocatedVariant().getId());
