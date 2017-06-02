@@ -1,5 +1,6 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,8 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
 
             List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO()
                     .findByAssemblyId(diagnosticBinningJob.getAssembly().getId());
+
+            List<BinResultsFinalDiagnostic> binResultsFinalDiagnosticResults = new ArrayList<>();
 
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info("locatedVariantList.size(): {}", locatedVariantList.size());
@@ -120,8 +123,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 1);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -132,7 +134,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
 
                                                 continue;
@@ -146,8 +148,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 2);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -158,7 +159,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -171,8 +172,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 3);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -183,7 +183,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -196,8 +196,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 4);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -208,7 +207,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -221,8 +220,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 5);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -233,7 +231,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -246,8 +244,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 6);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -258,7 +255,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -279,6 +276,13 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                 if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
                     es.shutdownNow();
                 }
+            }
+
+            logger.info("binResultsFinalDiagnosticResults.size(): {}", binResultsFinalDiagnosticResults.size());
+
+            for (BinResultsFinalDiagnostic binResultsFinalDiagnostic : binResultsFinalDiagnosticResults) {
+                logger.info(binResultsFinalDiagnostic.toString());
+                daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
             }
 
         } catch (Exception e) {

@@ -273,7 +273,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                 }
             }
 
-            logger.info("binResultsFinalDiagnosticResults.size()", binResultsFinalDiagnosticResults.size());
+            logger.info("binResultsFinalDiagnosticResults.size(): {}", binResultsFinalDiagnosticResults.size());
 
             for (BinResultsFinalDiagnostic binResultsFinalDiagnostic : binResultsFinalDiagnosticResults) {
                 logger.info(binResultsFinalDiagnostic.toString());
