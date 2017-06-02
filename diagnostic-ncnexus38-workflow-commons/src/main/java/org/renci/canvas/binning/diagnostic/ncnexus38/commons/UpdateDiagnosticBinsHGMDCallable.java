@@ -1,5 +1,6 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,8 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
 
             List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO()
                     .findByAssemblyId(diagnosticBinningJob.getAssembly().getId());
+
+            List<BinResultsFinalDiagnostic> binResultsFinalDiagnosticResults = new ArrayList<>();
 
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
@@ -121,8 +124,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 1);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -132,7 +134,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -145,8 +147,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 2);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -156,7 +157,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -169,8 +170,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 3);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -180,7 +180,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -193,8 +193,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 4);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -204,7 +203,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -217,8 +216,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 5);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -228,7 +226,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -241,8 +239,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO()
                                                         .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 6);
                                                 if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
-                                                    logger.info(binResultsFinalDiagnostic.toString());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
                                                     BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
@@ -252,7 +249,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
+                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
                                                 continue;
                                             }
@@ -274,6 +271,13 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                 if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
                     es.shutdownNow();
                 }
+            }
+
+            logger.info("binResultsFinalDiagnosticResults.size()", binResultsFinalDiagnosticResults.size());
+
+            for (BinResultsFinalDiagnostic binResultsFinalDiagnostic : binResultsFinalDiagnosticResults) {
+                logger.info(binResultsFinalDiagnostic.toString());
+                daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
             }
 
         } catch (Exception e) {
