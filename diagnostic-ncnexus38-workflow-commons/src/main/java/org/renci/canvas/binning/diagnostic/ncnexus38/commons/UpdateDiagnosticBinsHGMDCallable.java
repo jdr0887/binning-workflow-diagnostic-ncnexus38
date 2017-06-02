@@ -120,15 +120,12 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             BinResultsFinalDiagnostic binResultsFinalDiagnostic = findHGMDKnownPathogenic(variant,
                                                     locatedVariant37, maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 1);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
@@ -143,15 +140,12 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             binResultsFinalDiagnostic = findHGMDLikelyPathogenic(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 2);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
@@ -166,15 +160,12 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             binResultsFinalDiagnostic = findHGMDPossiblyPathogenic(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 3);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
@@ -189,15 +180,12 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             binResultsFinalDiagnostic = findHGMDUncertainSignificance(variant, locatedVariant37,
                                                     maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 4);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
@@ -212,15 +200,12 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             binResultsFinalDiagnostic = findHGMDLikelyBenign(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 5);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
@@ -235,15 +220,12 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             binResultsFinalDiagnostic = findHGMDAlmostCertainlyBenign(variant, locatedVariant37,
                                                     maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 6);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just hgmd values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());

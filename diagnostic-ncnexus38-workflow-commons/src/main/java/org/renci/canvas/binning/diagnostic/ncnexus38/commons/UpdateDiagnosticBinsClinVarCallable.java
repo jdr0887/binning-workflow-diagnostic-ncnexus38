@@ -119,15 +119,12 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             BinResultsFinalDiagnostic binResultsFinalDiagnostic = findClinVarKnownPathogenic(variant,
                                                     locatedVariant37, maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndHGMDDiseaseClassId(binResultsFinalDiagnostic.getId(), 1);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
                                                     foundBinResultsFinalDiagnostic
@@ -144,15 +141,12 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             binResultsFinalDiagnostic = findHGMDLikelyPathogenic(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 2);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
                                                     foundBinResultsFinalDiagnostic
@@ -168,15 +162,12 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             binResultsFinalDiagnostic = findClinVarPossiblyPathogenic(variant, locatedVariant37,
                                                     maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 3);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
                                                     foundBinResultsFinalDiagnostic
@@ -192,15 +183,12 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             binResultsFinalDiagnostic = findClinVarUncertainSignificance(variant, locatedVariant37,
                                                     maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 4);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
                                                     foundBinResultsFinalDiagnostic
@@ -216,15 +204,12 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             binResultsFinalDiagnostic = findHGMDLikelyBenign(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 5);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
                                                     foundBinResultsFinalDiagnostic
@@ -240,15 +225,12 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             binResultsFinalDiagnostic = findClinVarAlmostCertainlyBenign(variant, locatedVariant37,
                                                     maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
-                                                List<BinResultsFinalDiagnostic> foundBinResultsFinalDiagnostics = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO()
-                                                        .findByKeyAndClinVarDiseaseClassId(binResultsFinalDiagnostic.getId(), 6);
-                                                if (CollectionUtils.isEmpty(foundBinResultsFinalDiagnostics)) {
+                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
+                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
+                                                if (foundBinResultsFinalDiagnostic == null) {
                                                     binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
                                                 } else {
                                                     // just update with just clinvar values
-                                                    BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = foundBinResultsFinalDiagnostics
-                                                            .get(0);
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
                                                     foundBinResultsFinalDiagnostic
