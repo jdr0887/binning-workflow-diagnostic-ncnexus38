@@ -27,14 +27,9 @@
     <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
     <sequenceFlow sourceRef="updateFrequencies" targetRef="join" />
     <sequenceFlow sourceRef="join" targetRef="annotateVariants" />
-    <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsFork" />
-    <parallelGateway id="updateDiagnosticBinsFork" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsFork" targetRef="updateDiagnosticBinsHGMD" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsFork" targetRef="updateDiagnosticBinsClinVar" />
-    <parallelGateway id="updateDiagnosticBinsJoin" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsJoin" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="updateDiagnosticBinsJoin" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsJoin" targetRef="generateReport" />
+    <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsHGMD" />
+    <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsClinVar" />
+    <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="generateReport" />
     <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
     <sequenceFlow sourceRef="finalize" targetRef="end" />
 
