@@ -117,6 +117,7 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
                 }
 
                 GenomeRefSeq liftOverGenomeRefSeq = optionalGenomeRefSeq.get();
+                logger.info(liftOverGenomeRefSeq.toString());
 
                 GeReSe4jBuild gereseq4jMgr = GeReSe4jBuild_37_3.getInstance();
                 String referenceSequence = gereseq4jMgr.getRegion(liftOverGenomeRefSeq.getId(),
