@@ -16,10 +16,12 @@ import org.renci.canvas.dao.clinbin.model.DiagnosticResultVersion;
 import org.renci.canvas.dao.clinbin.model.MaxFrequency;
 import org.renci.canvas.dao.clinbin.model.MaxFrequencyPK;
 import org.renci.canvas.dao.clinbin.model.MaxFrequencySource;
-import org.renci.canvas.dao.genome1k.model.IndelMaxFrequency;
-import org.renci.canvas.dao.genome1k.model.IndelMaxFrequencyPK;
-import org.renci.canvas.dao.genome1k.model.SNPPopulationMaxFrequency;
-import org.renci.canvas.dao.genome1k.model.SNPPopulationMaxFrequencyPK;
+import org.renci.canvas.dao.onekgen.model.OneKGenomesIndelMaxFrequency;
+import org.renci.canvas.dao.onekgen.model.OneKGenomesIndelMaxFrequencyPK;
+import org.renci.canvas.dao.onekgen.model.OneKGenomesSNPPopulationMaxFrequency;
+import org.renci.canvas.dao.onekgen.model.OneKGenomesSNPPopulationMaxFrequencyPK;
+import org.renci.canvas.dao.gnomad.model.GnomADMaxVariantFrequency;
+import org.renci.canvas.dao.gnomad.model.GnomADMaxVariantFrequencyPK;
 import org.renci.canvas.dao.jpa.CANVASDAOManager;
 import org.renci.canvas.dao.var.model.CanonicalAllele;
 import org.renci.canvas.dao.var.model.LocatedVariant;
@@ -42,6 +44,7 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
             DiagnosticResultVersion diagnosticResultVersion = getBinningJob().getDiagnosticResultVersion();
             logger.info(diagnosticResultVersion.toString());
 
+            MaxFrequencySource gnomadMaxFrequencySource = getDaoBean().getMaxFrequencySourceDAO().findById("gnomad");
             MaxFrequencySource snpMaxFrequencySource = getDaoBean().getMaxFrequencySourceDAO().findById("snp");
             MaxFrequencySource indelMaxFrequencySource = getDaoBean().getMaxFrequencySourceDAO().findById("indel");
             MaxFrequencySource noneMaxFrequencySource = getDaoBean().getMaxFrequencySourceDAO().findById("none");
@@ -67,7 +70,9 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
 
                                 Optional<LocatedVariant> optionalLVFrom37 = ca.getLocatedVariants().stream()
                                         .filter(a -> a.getGenomeRef().getId().equals(2)).findAny();
+
                                 if (optionalLVFrom37.isPresent()) {
+
                                     LocatedVariant lv = optionalLVFrom37.get();
 
                                     logger.debug(locatedVariant.getGenomeRef().toString());
@@ -76,14 +81,36 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                     logger.debug(lv.getGenomeRef().toString());
                                     logger.debug(lv.toString());
 
-                                    SNPPopulationMaxFrequency snpPopulationMaxFrequency = getDaoBean().getSNPPopulationMaxFrequencyDAO()
-                                            .findById(new SNPPopulationMaxFrequencyPK(lv.getId(),
-                                                    diagnosticResultVersion.getGen1000SnpVersion()));
+                                    GnomADMaxVariantFrequencyPK gnomADMaxVariantFrequencyPK = new GnomADMaxVariantFrequencyPK(lv.getId(),
+                                            diagnosticResultVersion.getGnomadVersion());
+                                    GnomADMaxVariantFrequency gnomADMaxVariantFrequency = getDaoBean().getGnomADMaxVariantFrequencyDAO()
+                                            .findById(gnomADMaxVariantFrequencyPK);
+
+                                    if (gnomADMaxVariantFrequency != null) {
+
+                                        MaxFrequencyPK key = new MaxFrequencyPK(locatedVariant.getId(),
+                                                diagnosticResultVersion.getGnomadVersion());
+                                        MaxFrequency maxFrequency = getDaoBean().getMaxFrequencyDAO().findById(key);
+                                        if (maxFrequency == null) {
+                                            maxFrequency = new MaxFrequency(key, gnomadMaxFrequencySource);
+                                            maxFrequency.setMaxAlleleFreq(gnomADMaxVariantFrequency.getMaxAlleleFrequency());
+                                            maxFrequency.setLocatedVariant(locatedVariant);
+                                            logger.info(maxFrequency.toString());
+                                            getDaoBean().getMaxFrequencyDAO().save(maxFrequency);
+                                        }
+                                        return;
+                                    }
+
+                                    OneKGenomesSNPPopulationMaxFrequencyPK oneKGenomesSNPPopulationMaxFrequencyPK = new OneKGenomesSNPPopulationMaxFrequencyPK(
+                                            lv.getId(), diagnosticResultVersion.getGen1000SnpVersion());
+
+                                    OneKGenomesSNPPopulationMaxFrequency snpPopulationMaxFrequency = getDaoBean()
+                                            .getOneKGenomesSNPPopulationMaxFrequencyDAO().findById(oneKGenomesSNPPopulationMaxFrequencyPK);
 
                                     if (snpPopulationMaxFrequency != null) {
 
                                         MaxFrequencyPK key = new MaxFrequencyPK(locatedVariant.getId(),
-                                                diagnosticResultVersion.getGen1000SnpVersion());
+                                                diagnosticResultVersion.getGen1000SnpVersion().toString());
                                         MaxFrequency maxFrequency = getDaoBean().getMaxFrequencyDAO().findById(key);
                                         if (maxFrequency == null) {
                                             maxFrequency = new MaxFrequency(key, snpMaxFrequencySource);
@@ -95,12 +122,15 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                         return;
                                     }
 
-                                    IndelMaxFrequency indelMaxFrequency = getDaoBean().getIndelMaxFrequencyDAO().findById(
-                                            new IndelMaxFrequencyPK(lv.getId(), diagnosticResultVersion.getGen1000IndelVersion()));
+                                    OneKGenomesIndelMaxFrequencyPK oneKGenomesIndelMaxFrequencyPK = new OneKGenomesIndelMaxFrequencyPK(
+                                            lv.getId(), diagnosticResultVersion.getGen1000IndelVersion());
+
+                                    OneKGenomesIndelMaxFrequency indelMaxFrequency = getDaoBean().getOneKGenomesIndelMaxFrequencyDAO()
+                                            .findById(oneKGenomesIndelMaxFrequencyPK);
 
                                     if (indelMaxFrequency != null) {
                                         MaxFrequencyPK key = new MaxFrequencyPK(locatedVariant.getId(),
-                                                diagnosticResultVersion.getGen1000IndelVersion());
+                                                diagnosticResultVersion.getGen1000IndelVersion().toString());
                                         MaxFrequency maxFrequency = getDaoBean().getMaxFrequencyDAO().findById(key);
                                         if (maxFrequency == null) {
                                             maxFrequency = new MaxFrequency(key, indelMaxFrequencySource);
@@ -113,7 +143,7 @@ public class UpdateFrequenciesCallable extends AbstractUpdateFrequenciesCallable
                                     }
 
                                     if (snpPopulationMaxFrequency == null && indelMaxFrequency == null) {
-                                        MaxFrequencyPK key = new MaxFrequencyPK(locatedVariant.getId(), 0);
+                                        MaxFrequencyPK key = new MaxFrequencyPK(locatedVariant.getId(), "0");
                                         MaxFrequency maxFrequency = getDaoBean().getMaxFrequencyDAO().findById(key);
                                         if (maxFrequency == null) {
                                             maxFrequency = new MaxFrequency(key, noneMaxFrequencySource);
