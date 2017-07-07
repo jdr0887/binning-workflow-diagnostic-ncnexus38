@@ -33,7 +33,7 @@ public class ServiceTest {
 
         WebClient client = WebClient.create(restServiceURL, providers).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
 
-        DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 43);
+        DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 48);
         Response response = client.path("submit").post(info);
         String id = response.readEntity(String.class);
         System.out.println(id);
