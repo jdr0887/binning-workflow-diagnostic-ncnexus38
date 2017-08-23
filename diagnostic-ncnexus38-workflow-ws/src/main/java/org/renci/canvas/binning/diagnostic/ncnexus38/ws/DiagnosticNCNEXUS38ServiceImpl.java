@@ -32,8 +32,10 @@ public class DiagnosticNCNEXUS38ServiceImpl implements DiagnosticNCNEXUS38Servic
     @Override
     public Response submit(DiagnosticBinningJobInfo info) {
         logger.debug("ENTERING submit(DiagnosticBinningJobInfo)");
+        
         logger.info(info.toString());
         DiagnosticBinningJob binningJob = new DiagnosticBinningJob();
+        
         try {
             binningJob.setStudy("NCNEXUS38");
             binningJob.setGender(info.getGender());
@@ -49,6 +51,9 @@ public class DiagnosticNCNEXUS38ServiceImpl implements DiagnosticNCNEXUS38Servic
             List<DiagnosticBinningJob> foundBinningJobs = daoBeanService.getDiagnosticBinningJobDAO().findByExample(binningJob);
             if (CollectionUtils.isNotEmpty(foundBinningJobs)) {
                 binningJob = foundBinningJobs.get(0);
+                binningJob.setFailureMessage("");
+                binningJob.setStop(null);
+                daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
             } else {
                 binningJob.setId(daoBeanService.getDiagnosticBinningJobDAO().save(binningJob));
             }
