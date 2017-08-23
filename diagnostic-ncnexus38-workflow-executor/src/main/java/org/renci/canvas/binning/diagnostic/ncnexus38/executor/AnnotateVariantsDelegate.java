@@ -62,7 +62,7 @@ public class AnnotateVariantsDelegate implements JavaDelegate {
                 daoBean.getDiagnosticBinningJobDAO().save(binningJob);
                 logger.info(binningJob.toString());
             } catch (CANVASDAOException e1) {
-                e1.printStackTrace();
+                logger.error(e1.getMessage(), e1);
             }
         }
 
