@@ -9,6 +9,8 @@
   http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd
   ">
 
+  <bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor" />
+
   <reference id="daoBeanService" interface="org.renci.canvas.dao.CANVASDAOBeanService" />
   <reference id="binningExecutorService" interface="org.renci.canvas.binning.core.BinningExecutorService" />
 
@@ -18,6 +20,9 @@
   </bean>
 
   <jaxrs:server id="DiagnosticNCNEXUS38ServiceRS" address="/DiagnosticNCNEXUS38">
+    <jaxrs:inInterceptors>
+      <ref bean="logInbound" />
+    </jaxrs:inInterceptors>
     <jaxrs:serviceBeans>
       <ref component-id="diagnosticNCNEXUS38Impl" />
     </jaxrs:serviceBeans>
