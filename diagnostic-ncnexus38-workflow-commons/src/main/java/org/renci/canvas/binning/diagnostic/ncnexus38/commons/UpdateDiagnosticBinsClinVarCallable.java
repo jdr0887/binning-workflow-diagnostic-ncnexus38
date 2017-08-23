@@ -45,8 +45,8 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
             for (Integer diseaseClassId : Arrays.asList(1, 2, 3, 4, 5, 6)) {
                 prepES.submit(() -> {
                     try {
-                        daoBean.getBinResultsFinalDiagnosticDAO()
-                                .deleteByAssemblyIdAndClinVarDiseaseClassId(diagnosticBinningJob.getAssembly().getId(), diseaseClassId);
+                        daoBean.getBinResultsFinalDiagnosticDAO().deleteByDiagnosticBinningJobAndClinVarDiseaseClassId(diagnosticBinningJob,
+                                diseaseClassId);
                     } catch (CANVASDAOException e) {
                         logger.error(e.getMessage(), e);
                     }

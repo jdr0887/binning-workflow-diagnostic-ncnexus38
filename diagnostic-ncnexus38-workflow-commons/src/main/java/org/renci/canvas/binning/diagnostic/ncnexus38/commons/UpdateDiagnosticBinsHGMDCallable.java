@@ -45,8 +45,8 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
             for (Integer diseaseClassId : Arrays.asList(1, 2, 3, 4, 5, 6)) {
                 prepES.submit(() -> {
                     try {
-                        daoBean.getBinResultsFinalDiagnosticDAO()
-                                .deleteByAssemblyIdAndHGMDDiseaseClassId(diagnosticBinningJob.getAssembly().getId(), diseaseClassId);
+                        daoBean.getBinResultsFinalDiagnosticDAO().deleteByDiagnosticBinningJobAndHGMDDiseaseClassId(diagnosticBinningJob,
+                                diseaseClassId);
                     } catch (CANVASDAOException e) {
                         logger.error(e.getMessage(), e);
                     }
