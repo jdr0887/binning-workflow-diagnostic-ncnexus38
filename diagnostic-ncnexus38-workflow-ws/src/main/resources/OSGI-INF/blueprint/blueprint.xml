@@ -21,7 +21,7 @@
 
   <jaxrs:server id="DiagnosticNCNEXUS38ServiceRS" address="/DiagnosticNCNEXUS38">
     <jaxrs:inInterceptors>
-      <ref bean="logInbound" />
+      <ref component-id="logInbound" />
     </jaxrs:inInterceptors>
     <jaxrs:serviceBeans>
       <ref component-id="diagnosticNCNEXUS38Impl" />
