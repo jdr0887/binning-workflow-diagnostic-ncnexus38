@@ -33,6 +33,9 @@ public class ServiceTest {
 
         WebClient client = WebClient.create(restServiceURL, providers).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
 
+        // 5000 NCX_00004 NCNEXUS38 F 53 48 36351
+        // 5001 NCX_00004 NCNEXUS38 F 52 48 36352
+
         DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 48);
         Response response = client.path("submit").post(info);
         String id = response.readEntity(String.class);
