@@ -90,7 +90,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
 
                                         if (optionalLocatedVariant.isPresent()) {
 
-                                            // we done't have hgmd data for 38, get from 37
+                                            // we don't have hgmd data for 38, get from 37
                                             LocatedVariant locatedVariant37 = optionalLocatedVariant.get();
                                             logger.debug(locatedVariant37.toString());
 
@@ -138,7 +138,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             }
 
                                             // clinvar - likely pathogenic(2)
-                                            binResultsFinalDiagnostic = findHGMDLikelyPathogenic(variant, locatedVariant37, maxFrequency,
+                                            binResultsFinalDiagnostic = findClinVarLikelyPathogenic(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
@@ -201,7 +201,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             }
 
                                             // clinvar - likely benign(5)
-                                            binResultsFinalDiagnostic = findHGMDLikelyBenign(variant, locatedVariant37, maxFrequency,
+                                            binResultsFinalDiagnostic = findClinVarLikelyBenign(variant, locatedVariant37, maxFrequency,
                                                     diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
