@@ -54,6 +54,7 @@ public class LoadVCFDelegate implements JavaDelegate {
             logger.info(binningJob.toString());
 
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             try {
                 DiagnosticBinningJob binningJob = daoBean.getDiagnosticBinningJobDAO().findById(binningJobId);
                 binningJob.setStop(new Date());
@@ -61,9 +62,8 @@ public class LoadVCFDelegate implements JavaDelegate {
                 binningJob.setStatus(daoBean.getDiagnosticStatusTypeDAO().findById("Failed"));
                 daoBean.getDiagnosticBinningJobDAO().save(binningJob);
                 logger.info(binningJob.toString());
-
             } catch (CANVASDAOException e1) {
-                e1.printStackTrace();
+                logger.error(e1.getMessage(), e1);
             }
         }
 
