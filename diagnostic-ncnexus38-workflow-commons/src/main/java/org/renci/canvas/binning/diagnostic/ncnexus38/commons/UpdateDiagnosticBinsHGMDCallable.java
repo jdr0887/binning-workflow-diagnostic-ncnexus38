@@ -116,9 +116,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             DiagnosticGene diagnosticGene = diagnosticGeneList.get(0);
                                             logger.debug(diagnosticGene.toString());
 
-                                            // hgmd - known pathogenic(1)
-                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = findHGMDKnownPathogenic(variant,
-                                                    locatedVariant37, maxFrequency, diagnosticGene);
+                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantHGMD(variant, locatedVariant37, maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
                                                         .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
@@ -133,107 +131,7 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
                                                     binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
-                                                continue;
-                                            }
 
-                                            // hgmd - likely pathogenic(2)
-                                            binResultsFinalDiagnostic = findHGMDLikelyPathogenic(variant, locatedVariant37, maxFrequency,
-                                                    diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just hgmd values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
-                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // hgmd - possibly pathogenic(3)
-                                            binResultsFinalDiagnostic = findHGMDPossiblyPathogenic(variant, locatedVariant37, maxFrequency,
-                                                    diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just hgmd values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
-                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // hgmd - uncertain significance(4)
-                                            binResultsFinalDiagnostic = findHGMDUncertainSignificance(variant, locatedVariant37,
-                                                    maxFrequency, diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just hgmd values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
-                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // hgmd - likely benign(5)
-                                            binResultsFinalDiagnostic = findHGMDLikelyBenign(variant, locatedVariant37, maxFrequency,
-                                                    diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just hgmd values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
-                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // hgmd almost certainly benign(6)
-                                            binResultsFinalDiagnostic = findHGMDAlmostCertainlyBenign(variant, locatedVariant37,
-                                                    maxFrequency, diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just hgmd values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
-                                                    foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
                                             }
 
                                         }

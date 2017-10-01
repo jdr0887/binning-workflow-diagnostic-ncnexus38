@@ -115,9 +115,7 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             DiagnosticGene diagnosticGene = diagnosticGeneList.get(0);
                                             logger.debug(diagnosticGene.toString());
 
-                                            // clinvar - known pathogenic(1)
-                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = findClinVarKnownPathogenic(variant,
-                                                    locatedVariant37, maxFrequency, diagnosticGene);
+                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantClinVar(variant, locatedVariant37, maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
                                                         .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
@@ -134,115 +132,10 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                     binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
                                                 }
 
-                                                continue;
-                                            }
-
-                                            // clinvar - likely pathogenic(2)
-                                            binResultsFinalDiagnostic = findClinVarLikelyPathogenic(variant, locatedVariant37, maxFrequency,
-                                                    diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just clinvar values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // clinvar - possibly pathogenic(3)
-                                            binResultsFinalDiagnostic = findClinVarPossiblyPathogenic(variant, locatedVariant37,
-                                                    maxFrequency, diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just clinvar values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // clinvar - uncertain significance(4)
-                                            binResultsFinalDiagnostic = findClinVarUncertainSignificance(variant, locatedVariant37,
-                                                    maxFrequency, diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just clinvar values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // clinvar - likely benign(5)
-                                            binResultsFinalDiagnostic = findClinVarLikelyBenign(variant, locatedVariant37, maxFrequency,
-                                                    diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just clinvar values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
-                                            }
-
-                                            // clinvar almost certainly benign(6)
-                                            binResultsFinalDiagnostic = findClinVarAlmostCertainlyBenign(variant, locatedVariant37,
-                                                    maxFrequency, diagnosticGene);
-                                            if (binResultsFinalDiagnostic != null) {
-                                                BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
-                                                        .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
-                                                    // just update with just clinvar values
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAccession(binResultsFinalDiagnostic.getClinvarAccession());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
-                                                    foundBinResultsFinalDiagnostic
-                                                            .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
-                                                }
-                                                continue;
                                             }
 
                                         }
+
                                     }
 
                                 }
