@@ -116,7 +116,8 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             DiagnosticGene diagnosticGene = diagnosticGeneList.get(0);
                                             logger.debug(diagnosticGene.toString());
 
-                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantHGMD(variant, locatedVariant37, maxFrequency, diagnosticGene);
+                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantHGMD(variant, locatedVariant37,
+                                                    maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
                                                         .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());

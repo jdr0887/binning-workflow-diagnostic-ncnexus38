@@ -115,7 +115,9 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                             DiagnosticGene diagnosticGene = diagnosticGeneList.get(0);
                                             logger.debug(diagnosticGene.toString());
 
-                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantClinVar(variant, locatedVariant37, maxFrequency, diagnosticGene);
+                                            BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantClinVar(variant,
+                                                    locatedVariant37, maxFrequency, diagnosticGene);
+
                                             if (binResultsFinalDiagnostic != null) {
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
                                                         .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
