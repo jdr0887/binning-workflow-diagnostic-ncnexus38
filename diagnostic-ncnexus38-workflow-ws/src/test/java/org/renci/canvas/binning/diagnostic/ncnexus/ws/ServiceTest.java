@@ -35,8 +35,9 @@ public class ServiceTest {
 
         // 5000 NCX_00004 NCNEXUS38 F 53 48 36351
         // 5001 NCX_00004 NCNEXUS38 F 52 48 36352
+        // 5002 NCX_00002 NCNEXUS38 F 53 75 36353
 
-        DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 48);
+        DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 75);
         Response response = client.path("submit").post(info);
         String id = response.readEntity(String.class);
         System.out.println(id);
