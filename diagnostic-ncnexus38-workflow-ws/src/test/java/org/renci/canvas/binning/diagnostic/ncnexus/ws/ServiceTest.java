@@ -1,6 +1,7 @@
 package org.renci.canvas.binning.diagnostic.ncnexus.ws;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -29,6 +30,16 @@ public class ServiceTest {
         provider.setMapper(mapper);
         providers.add(provider);
 
+        List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 48),
+                new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 48), new DiagnosticBinningJobInfo("NCX_00004", "F", 53, 48),
+                new DiagnosticBinningJobInfo("NCX_00002", "F", 52, 48), new DiagnosticBinningJobInfo("NCX_00075", "E", 53, 48),
+                new DiagnosticBinningJobInfo("NCX_00082", "M", 53, 48), new DiagnosticBinningJobInfo("NCX_00103", "F", 53, 48),
+                new DiagnosticBinningJobInfo("NCX_00082", "M", 51, 48), new DiagnosticBinningJobInfo("NCX_00136", "M", 51, 48),
+                new DiagnosticBinningJobInfo("NCX_00092", "F", 53, 48), new DiagnosticBinningJobInfo("NCX_00197", "M", 53, 48),
+                new DiagnosticBinningJobInfo("NCX_00110", "E", 53, 48), new DiagnosticBinningJobInfo("NCX_00092", "F", 51, 48),
+                new DiagnosticBinningJobInfo("NCX_00103", "F", 51, 48), new DiagnosticBinningJobInfo("NCX_00197", "M", 52, 48),
+                new DiagnosticBinningJobInfo("NCX_00136", "M", 53, 48));
+
         String restServiceURL = String.format("http://%1$s:%2$d/cxf/%3$s/%3$sService", "152.54.3.113", 8181, "DiagnosticNCNEXUS38");
 
         WebClient client = WebClient.create(restServiceURL, providers).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
@@ -37,11 +48,16 @@ public class ServiceTest {
         // 5001 NCX_00004 NCNEXUS38 F 52 48 36352
         // 5002 NCX_00002 NCNEXUS38 F 53 75 36353
 
-        DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 75);
-        Response response = client.path("submit").post(info);
-        String id = response.readEntity(String.class);
-        System.out.println(id);
+        // DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 76);
+        // Response response = client.path("submit").post(info);
+        // String id = response.readEntity(String.class);
+        // System.out.println(id);
 
+        for (DiagnosticBinningJobInfo job : jobs) {
+            Response response = client.path("submit").post(job);
+            String id = response.readEntity(String.class);
+            System.out.println(id);
+        }
     }
 
     @Test
