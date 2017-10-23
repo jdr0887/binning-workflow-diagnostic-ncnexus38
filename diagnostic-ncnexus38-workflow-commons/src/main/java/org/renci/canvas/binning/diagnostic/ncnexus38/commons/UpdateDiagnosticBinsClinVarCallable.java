@@ -127,14 +127,16 @@ public class UpdateDiagnosticBinsClinVarCallable extends AbstractUpdateDiagnosti
                                                             .setClinvarAssertion(binResultsFinalDiagnostic.getClinvarAssertion());
                                                     foundBinResultsFinalDiagnostic
                                                             .setClinvarDiseaseClass(binResultsFinalDiagnostic.getClinvarDiseaseClass());
+                                                } else {
+                                                    foundBinResultsFinalDiagnostic = binResultsFinalDiagnostic;
                                                 }
 
-                                                if (binResultsFinalDiagnostic.getClinvarDiseaseClass() == null) {
+                                                if (foundBinResultsFinalDiagnostic.getClinvarDiseaseClass() == null) {
                                                     logger.error("clinvar DiseaseClass is null");
                                                 }
 
-                                                logger.info(binResultsFinalDiagnostic.toString());
-                                                daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
+                                                logger.info(foundBinResultsFinalDiagnostic.toString());
+                                                daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
 
                                             }
 

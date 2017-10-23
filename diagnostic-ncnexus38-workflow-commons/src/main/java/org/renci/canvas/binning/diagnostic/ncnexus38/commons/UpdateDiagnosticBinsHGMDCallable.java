@@ -1,6 +1,5 @@
 package org.renci.canvas.binning.diagnostic.ncnexus38.commons;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -60,8 +59,6 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
             List<LocatedVariant> locatedVariantList = daoBean.getLocatedVariantDAO()
                     .findByAssemblyId(diagnosticBinningJob.getAssembly().getId());
 
-            List<BinResultsFinalDiagnostic> binResultsFinalDiagnosticResults = new ArrayList<>();
-
             if (CollectionUtils.isNotEmpty(locatedVariantList)) {
                 logger.info(String.format("locatedVariantList.size(): %d", locatedVariantList.size()));
 
@@ -119,19 +116,28 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                             BinResultsFinalDiagnostic binResultsFinalDiagnostic = binVariantHGMD(variant, locatedVariant37,
                                                     maxFrequency, diagnosticGene);
                                             if (binResultsFinalDiagnostic != null) {
+
                                                 BinResultsFinalDiagnostic foundBinResultsFinalDiagnostic = daoBean
                                                         .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
-                                                if (foundBinResultsFinalDiagnostic == null) {
-                                                    binResultsFinalDiagnosticResults.add(binResultsFinalDiagnostic);
-                                                } else {
+
+                                                if (foundBinResultsFinalDiagnostic != null) {
+                                                    logger.info("updating a found BinResultsFinalDiagnostic");
                                                     // just update with just hgmd values
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
                                                     foundBinResultsFinalDiagnostic.setHgmdTag(binResultsFinalDiagnostic.getHgmdTag());
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
-                                                    binResultsFinalDiagnosticResults.add(foundBinResultsFinalDiagnostic);
+                                                } else {
+                                                    foundBinResultsFinalDiagnostic = binResultsFinalDiagnostic;
                                                 }
+
+                                                if (foundBinResultsFinalDiagnostic.getHgmdDiseaseClass() == null) {
+                                                    logger.error("hgmd DiseaseClass is null");
+                                                }
+
+                                                logger.info(foundBinResultsFinalDiagnostic.toString());
+                                                daoBean.getBinResultsFinalDiagnosticDAO().save(foundBinResultsFinalDiagnostic);
 
                                             }
 
@@ -152,13 +158,6 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                 if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
                     es.shutdownNow();
                 }
-            }
-
-            logger.info("binResultsFinalDiagnosticResults.size(): {}", binResultsFinalDiagnosticResults.size());
-
-            for (BinResultsFinalDiagnostic binResultsFinalDiagnostic : binResultsFinalDiagnosticResults) {
-                logger.info(binResultsFinalDiagnostic.toString());
-                daoBean.getBinResultsFinalDiagnosticDAO().save(binResultsFinalDiagnostic);
             }
 
         } catch (Exception e) {
