@@ -121,7 +121,6 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                         .getBinResultsFinalDiagnosticDAO().findById(binResultsFinalDiagnostic.getId());
 
                                                 if (foundBinResultsFinalDiagnostic != null) {
-                                                    logger.info("updating a found BinResultsFinalDiagnostic");
                                                     // just update with just hgmd values
                                                     foundBinResultsFinalDiagnostic
                                                             .setHgmdAccessionNumber(binResultsFinalDiagnostic.getHgmdAccessionNumber());
@@ -130,10 +129,6 @@ public class UpdateDiagnosticBinsHGMDCallable extends AbstractUpdateDiagnosticBi
                                                             .setHgmdDiseaseClass(binResultsFinalDiagnostic.getHgmdDiseaseClass());
                                                 } else {
                                                     foundBinResultsFinalDiagnostic = binResultsFinalDiagnostic;
-                                                }
-
-                                                if (foundBinResultsFinalDiagnostic.getHgmdDiseaseClass() == null) {
-                                                    logger.error("hgmd DiseaseClass is null");
                                                 }
 
                                                 logger.info(foundBinResultsFinalDiagnostic.toString());
