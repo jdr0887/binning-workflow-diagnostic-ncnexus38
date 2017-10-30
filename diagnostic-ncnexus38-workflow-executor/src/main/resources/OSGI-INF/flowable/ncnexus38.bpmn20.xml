@@ -7,9 +7,10 @@
 
     <startEvent id="start" />
     <serviceTask id="initialize" flowable:class="org.renci.canvas.binning.core.diagnostic.InitializeDelegate" />
-    <serviceTask id="loadVCF" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadVCFDelegate" />
-    <serviceTask id="loadCoverage" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate" />
-    <serviceTask id="updateFrequencies" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate" />
+    <!-- <serviceTask id="loadVCF" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadVCFDelegate" /> -->
+    <!-- <serviceTask id="loadCoverage" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate" /> -->
+    <!-- <serviceTask id="updateFrequencies" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate" 
+      /> -->
     <serviceTask id="annotateVariants" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" />
     <serviceTask id="updateDiagnosticBinsHGMD" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsHGMDDelegate" />
     <serviceTask id="updateDiagnosticBinsClinVar" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsClinVarDelegate" />
@@ -18,15 +19,17 @@
     <endEvent id="end" />
 
     <sequenceFlow sourceRef="start" targetRef="initialize" />
-    <sequenceFlow sourceRef="initialize" targetRef="loadVCF" />
-    <sequenceFlow sourceRef="loadVCF" targetRef="fork" />
-    <parallelGateway id="fork" />
-    <sequenceFlow sourceRef="fork" targetRef="loadCoverage" />
-    <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" />
-    <parallelGateway id="join" />
-    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
-    <sequenceFlow sourceRef="updateFrequencies" targetRef="join" />
-    <sequenceFlow sourceRef="join" targetRef="annotateVariants" />
+    <!-- <sequenceFlow sourceRef="initialize" targetRef="loadVCF" /> -->
+    <!-- <sequenceFlow sourceRef="loadVCF" targetRef="fork" /> -->
+    <!-- <parallelGateway id="fork" /> -->
+    <!-- <sequenceFlow sourceRef="fork" targetRef="loadCoverage" /> -->
+    <!-- <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" /> -->
+    <!-- <parallelGateway id="join" /> -->
+    <!-- <sequenceFlow sourceRef="loadCoverage" targetRef="join" /> -->
+    <!-- <sequenceFlow sourceRef="updateFrequencies" targetRef="join" /> -->
+    <!-- <sequenceFlow sourceRef="join" targetRef="annotateVariants" /> -->
+
+    <sequenceFlow sourceRef="initialize" targetRef="annotateVariants" />
     <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsHGMD" />
     <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsClinVar" />
     <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="generateReport" />
