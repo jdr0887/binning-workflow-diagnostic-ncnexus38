@@ -97,7 +97,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
 
                     logger.debug("dxExonList.size(): {}", dxExonList.size());
 
-                    ExecutorService es = Executors.newFixedThreadPool(4);
+                    ExecutorService es = Executors.newFixedThreadPool(2);
 
                     for (DXExons dxExon : dxExonList) {
                         es.submit(() -> {
@@ -130,7 +130,7 @@ public class LoadCoverageCallable extends AbstractLoadCoverageCallable {
                         });
                     }
                     es.shutdown();
-                    if (!es.awaitTermination(1L, TimeUnit.HOURS)) {
+                    if (!es.awaitTermination(3L, TimeUnit.HOURS)) {
                         es.shutdownNow();
                     }
                 }
