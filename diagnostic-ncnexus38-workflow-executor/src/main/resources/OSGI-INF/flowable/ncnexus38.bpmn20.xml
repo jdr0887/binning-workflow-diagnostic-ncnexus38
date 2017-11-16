@@ -5,13 +5,38 @@
 
   <process id="ncnexus38_diagnostic_binning" name="NCNEXUS38DiagnosticBinning">
 
+    <startEvent id="start" />
+    <serviceTask id="initialize" name="initialize" flowable:class="org.renci.canvas.binning.core.diagnostic.InitializeDelegate" />
+    <serviceTask id="loadVCF" name="loadVCF" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadVCFDelegate" />
+    <serviceTask id="loadCoverage" name="loadCoverage" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate" />
+    <serviceTask id="updateFrequencies" name="updateFrequencies" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate" />
+    <serviceTask id="annotateVariants" name="annotateVariants" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" />
+    <serviceTask id="updateDiagnosticBinsHGMD" name="updateDiagnosticBinsHGMD"
+      flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsHGMDDelegate" />
+    <serviceTask id="updateDiagnosticBinsClinVar" name="updateDiagnosticBinsClinVar"
+      flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsClinVarDelegate" />
+    <serviceTask id="generateReport" name="generateReport" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.GenerateReportDelegate" />
+    <serviceTask id="finalize" name="finalize" flowable:class="org.renci.canvas.binning.core.diagnostic.FinalizeDelegate" />
+    <endEvent id="end" />
+
+    <sequenceFlow sourceRef="start" targetRef="initialize" />
+    <sequenceFlow sourceRef="initialize" targetRef="loadVCF" />
+    <sequenceFlow sourceRef="loadVCF" targetRef="fork" />
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="loadCoverage" />
+    <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" />
+    <sequenceFlow sourceRef="updateFrequencies" targetRef="annotateVariants" />
+    <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsHGMD" />
+    <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsClinVar" />
+    <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="join" />
+    <parallelGateway id="join" />
+    <sequenceFlow sourceRef="join" targetRef="generateReport" />
+    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
+    <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
+    <sequenceFlow sourceRef="finalize" targetRef="end" />
+
     <!-- <startEvent id="start" /> -->
     <!-- <serviceTask id="initialize" name="initialize" flowable:class="org.renci.canvas.binning.core.diagnostic.InitializeDelegate" /> -->
-    <!-- <serviceTask id="loadVCF" name="loadVCF" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadVCFDelegate" /> -->
-    <!-- <serviceTask id="loadCoverage" name="loadCoverage" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.LoadCoverageDelegate" 
-      /> -->
-    <!-- <serviceTask id="updateFrequencies" name="updateFrequencies" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateFrequenciesDelegate" 
-      /> -->
     <!-- <serviceTask id="annotateVariants" name="annotateVariants" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" 
       /> -->
     <!-- <serviceTask id="updateDiagnosticBinsHGMD" name="updateDiagnosticBinsHGMD" -->
@@ -24,39 +49,12 @@
     <!-- <endEvent id="end" /> -->
 
     <!-- <sequenceFlow sourceRef="start" targetRef="initialize" /> -->
-    <!-- <sequenceFlow sourceRef="initialize" targetRef="loadVCF" /> -->
-    <!-- <sequenceFlow sourceRef="loadVCF" targetRef="fork" /> -->
-    <!-- <parallelGateway id="fork" /> -->
-    <!-- <sequenceFlow sourceRef="fork" targetRef="loadCoverage" /> -->
-    <!-- <sequenceFlow sourceRef="fork" targetRef="updateFrequencies" /> -->
-    <!-- <sequenceFlow sourceRef="updateFrequencies" targetRef="annotateVariants" /> -->
+    <!-- <sequenceFlow sourceRef="initialize" targetRef="annotateVariants" /> -->
     <!-- <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsHGMD" /> -->
     <!-- <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsClinVar" /> -->
-    <!-- <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="join" /> -->
-    <!-- <parallelGateway id="join" /> -->
-    <!-- <sequenceFlow sourceRef="join" targetRef="generateReport" /> -->
-    <!-- <sequenceFlow sourceRef="loadCoverage" targetRef="join" /> -->
+    <!-- <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="generateReport" /> -->
     <!-- <sequenceFlow sourceRef="generateReport" targetRef="finalize" /> -->
     <!-- <sequenceFlow sourceRef="finalize" targetRef="end" /> -->
-
-    <startEvent id="start" />
-    <serviceTask id="initialize" name="initialize" flowable:class="org.renci.canvas.binning.core.diagnostic.InitializeDelegate" />
-    <serviceTask id="annotateVariants" name="annotateVariants" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.AnnotateVariantsDelegate" />
-    <serviceTask id="updateDiagnosticBinsHGMD" name="updateDiagnosticBinsHGMD"
-      flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsHGMDDelegate" />
-    <serviceTask id="updateDiagnosticBinsClinVar" name="updateDiagnosticBinsClinVar"
-      flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.UpdateDiagnosticBinsClinVarDelegate" />
-    <serviceTask id="generateReport" name="generateReport" flowable:class="org.renci.canvas.binning.diagnostic.ncnexus38.executor.GenerateReportDelegate" />
-    <serviceTask id="finalize" name="finalize" flowable:class="org.renci.canvas.binning.core.diagnostic.FinalizeDelegate" />
-    <endEvent id="end" />
-
-    <sequenceFlow sourceRef="start" targetRef="initialize" />
-    <sequenceFlow sourceRef="initialize" targetRef="annotateVariants" />
-    <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsHGMD" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsClinVar" />
-    <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="generateReport" />
-    <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
-    <sequenceFlow sourceRef="finalize" targetRef="end" />
 
   </process>
 
