@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
+import org.flowable.engine.common.api.FlowableException;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 import org.osgi.framework.BundleContext;
@@ -54,7 +55,6 @@ public class LoadVCFDelegate implements JavaDelegate {
             logger.info(binningJob.toString());
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             try {
                 DiagnosticBinningJob binningJob = daoBean.getDiagnosticBinningJobDAO().findById(binningJobId);
                 binningJob.setStop(new Date());
@@ -65,6 +65,8 @@ public class LoadVCFDelegate implements JavaDelegate {
             } catch (CANVASDAOException e1) {
                 logger.error(e1.getMessage(), e1);
             }
+            logger.error(e.getMessage(), e);
+            throw new FlowableException(e.getMessage());
         }
 
     }
