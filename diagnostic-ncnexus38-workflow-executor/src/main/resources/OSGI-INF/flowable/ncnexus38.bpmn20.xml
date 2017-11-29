@@ -29,9 +29,9 @@
     <sequenceFlow sourceRef="annotateVariants" targetRef="updateDiagnosticBinsHGMD" />
     <sequenceFlow sourceRef="updateDiagnosticBinsHGMD" targetRef="updateDiagnosticBinsClinVar" />
     <sequenceFlow sourceRef="updateDiagnosticBinsClinVar" targetRef="join" />
+    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
     <parallelGateway id="join" />
     <sequenceFlow sourceRef="join" targetRef="generateReport" />
-    <sequenceFlow sourceRef="loadCoverage" targetRef="join" />
     <sequenceFlow sourceRef="generateReport" targetRef="finalize" />
     <sequenceFlow sourceRef="finalize" targetRef="end" />
 
