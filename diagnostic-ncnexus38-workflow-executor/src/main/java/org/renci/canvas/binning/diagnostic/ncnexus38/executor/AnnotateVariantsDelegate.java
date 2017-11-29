@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
+import org.flowable.engine.common.api.FlowableException;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 import org.osgi.framework.BundleContext;
@@ -64,6 +65,8 @@ public class AnnotateVariantsDelegate implements JavaDelegate {
             } catch (CANVASDAOException e1) {
                 logger.error(e1.getMessage(), e1);
             }
+            logger.error(e.getMessage(), e);
+            throw new FlowableException(e.getMessage());
         }
 
     }
