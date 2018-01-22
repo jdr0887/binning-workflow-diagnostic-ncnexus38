@@ -36,11 +36,12 @@ public class RestartBinningJobAction implements Action {
         logger.debug("ENTERING execute()");
 
         DiagnosticBinningJob binningJob = daoBeanService.getDiagnosticBinningJobDAO().findById(binningJobId);
-
+        binningJob.setFailureMessage("");
+        binningJob.setStop(null);
         binningJob.setStatus(daoBeanService.getDiagnosticStatusTypeDAO().findById("Requested"));
+        daoBeanService.getDiagnosticBinningJobDAO().save(binningJob);
 
         Runnable runnable2Remove = binningExecutorService.getExecutor().getQueue().stream().filter(a -> {
-
             if (a instanceof DiagnosticNCNEXUS38Task) {
                 DiagnosticNCNEXUS38Task b = (DiagnosticNCNEXUS38Task) a;
                 if (binningJob.getId().equals(b.getBinningJobId())) {
