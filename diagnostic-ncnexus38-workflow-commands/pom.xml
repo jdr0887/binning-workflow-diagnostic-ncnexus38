@@ -33,6 +33,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.renci.canvas.binning</groupId>
+      <artifactId>binning-core</artifactId>
+    </dependency>    
+    <dependency>
       <groupId>org.renci.canvas.binning.diagnostic-ncnexus38-workflow</groupId>
       <artifactId>diagnostic-ncnexus38-workflow-executor</artifactId>
     </dependency>              
