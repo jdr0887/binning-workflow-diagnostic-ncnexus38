@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
@@ -38,8 +37,12 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
 
     private List<GenomeRefSeq> genomeRefSeqs4LiftOver;
 
+    private LiftOver liftOver;
+
     public LoadVCFCallable(CANVASDAOBeanService daoBean, DiagnosticBinningJob binningJob) {
         super(daoBean, binningJob);
+        File chainFile = new File(String.format("%s/liftOver", System.getProperty("karaf.data")), "hg38ToHg19.over.chain.gz");
+        this.liftOver = new LiftOver(chainFile);
     }
 
     @Override
@@ -91,12 +94,15 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
         logger.debug("ENTERING liftOver(LocatedVariant)");
         LocatedVariant ret = null;
         try {
-            File chainFile = new File(String.format("%s/liftOver", System.getProperty("karaf.data")), "hg38ToHg19.over.chain.gz");
-            LiftOver liftOver = new LiftOver(chainFile);
             Interval interval = new Interval(String.format("chr%s", locatedVariant.getGenomeRefSeq().getContig()),
                     locatedVariant.getPosition(), locatedVariant.getEndPosition());
-            Interval loInterval = liftOver.liftOver(interval);
+            Interval loInterval = this.liftOver.liftOver(interval);
             if (loInterval != null) {
+
+                if (interval.length() != loInterval.length()) {
+                    return null;
+                }
+
                 if (this.genomeRef4LiftOver == null) {
                     this.genomeRef4LiftOver = getDaoBean().getGenomeRefDAO().findById(2);
                 }
@@ -106,17 +112,11 @@ public class LoadVCFCallable extends AbstractLoadVCFCallable {
                             "Chromosome");
                 }
 
-                Optional<GenomeRefSeq> optionalGenomeRefSeq = this.genomeRefSeqs4LiftOver.stream()
-                        .filter(a -> a.getContig().equals(locatedVariant.getGenomeRefSeq().getContig())).findAny();
-                if (!optionalGenomeRefSeq.isPresent()) {
+                GenomeRefSeq liftOverGenomeRefSeq = this.genomeRefSeqs4LiftOver.stream()
+                        .filter(a -> a.getContig().equals(locatedVariant.getGenomeRefSeq().getContig())).findFirst().orElse(null);
+                if (liftOverGenomeRefSeq == null) {
                     throw new BinningException("GenomeRefSeq not found");
                 }
-
-                if (interval.length() != loInterval.length()) {
-                    return null;
-                }
-
-                GenomeRefSeq liftOverGenomeRefSeq = optionalGenomeRefSeq.get();
                 logger.info(liftOverGenomeRefSeq.toString());
 
                 GeReSe4jBuild gereseq4jMgr = GeReSe4jBuild_37_3.getInstance();
