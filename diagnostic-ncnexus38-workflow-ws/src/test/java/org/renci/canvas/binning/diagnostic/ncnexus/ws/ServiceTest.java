@@ -89,13 +89,18 @@ public class ServiceTest {
         // new DiagnosticBinningJobInfo("NCX_00136", "M", 53, 77), new DiagnosticBinningJobInfo("NCX_00136", "M", 51, 77),
         // new DiagnosticBinningJobInfo("NCX_00197", "M", 53, 77), new DiagnosticBinningJobInfo("NCX_00197", "M", 52, 77));
 
-        List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00004", "F", 53, 77),
-                new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 77), new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 77),
-                new DiagnosticBinningJobInfo("NCX_00002", "F", 52, 77), new DiagnosticBinningJobInfo("NCX_00130", "F", 53, 77),
-                new DiagnosticBinningJobInfo("NCX_00130", "F", 51, 77), new DiagnosticBinningJobInfo("NCX_00149", "F", 53, 77),
-                new DiagnosticBinningJobInfo("NCX_00149", "F", 51, 77));
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00004", "F", 53, 77),
+        // new DiagnosticBinningJobInfo("NCX_00004", "F", 52, 77), new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 77),
+        // new DiagnosticBinningJobInfo("NCX_00002", "F", 52, 77), new DiagnosticBinningJobInfo("NCX_00130", "F", 53, 77),
+        // new DiagnosticBinningJobInfo("NCX_00130", "F", 51, 77), new DiagnosticBinningJobInfo("NCX_00149", "F", 53, 77),
+        // new DiagnosticBinningJobInfo("NCX_00149", "F", 51, 77));
 
-        //List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 77));
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00068", "M", 51, 78),
+        // new DiagnosticBinningJobInfo("NCX_00218", "M", 53, 78), new DiagnosticBinningJobInfo("NCX_00218", "M", 51, 78));
+
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 77));
+
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00186", "F", 53, 79));
 
         // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00063", "M", 53, 77),
         // new DiagnosticBinningJobInfo("NCX_00063", "M", 52, 77), new DiagnosticBinningJobInfo("NCX_00071", "F", 53, 77),
@@ -105,6 +110,33 @@ public class ServiceTest {
         // new DiagnosticBinningJobInfo("NCX_00150", "F", 51, 77), new DiagnosticBinningJobInfo("NCX_00172", "F", 53, 77),
         // new DiagnosticBinningJobInfo("NCX_00172", "F", 51, 77), new DiagnosticBinningJobInfo("NCX_00173", "M", 53, 77),
         // new DiagnosticBinningJobInfo("NCX_00173", "M", 51, 77));
+
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00029", "F", 49, 79),
+        // new DiagnosticBinningJobInfo("NCX_00029", "F", 50, 79));
+
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00020", "M", 53, 79),
+        // new DiagnosticBinningJobInfo("NCX_00020", "M", 49, 79), new DiagnosticBinningJobInfo("NCX_00020", "M", 50, 79),
+        // new DiagnosticBinningJobInfo("NCX_00020", "M", 55, 79), new DiagnosticBinningJobInfo("NCX_00029", "F", 53, 79),
+        // new DiagnosticBinningJobInfo("NCX_00029", "F", 49, 79), new DiagnosticBinningJobInfo("NCX_00029", "F", 50, 79),
+        // new DiagnosticBinningJobInfo("NCX_00029", "F", 55, 79), new DiagnosticBinningJobInfo("NCX_00172", "F", 53, 79),
+        // new DiagnosticBinningJobInfo("NCX_00172", "F", 51, 79), new DiagnosticBinningJobInfo("NCX_00172", "F", 49, 79),
+        // new DiagnosticBinningJobInfo("NCX_00172", "F", 50, 79), new DiagnosticBinningJobInfo("NCX_00172", "F", 55, 79),
+        // new DiagnosticBinningJobInfo("NCX_00082", "M", 53, 79), new DiagnosticBinningJobInfo("NCX_00082", "M", 51, 79),
+        // new DiagnosticBinningJobInfo("NCX_00082", "M", 49, 79), new DiagnosticBinningJobInfo("NCX_00082", "M", 55, 79),
+        // new DiagnosticBinningJobInfo("NCX_00186", "F", 53, 79));
+
+        // List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00020", "M", 53, 79),
+        // new DiagnosticBinningJobInfo("NCX_00020", "M", 49, 79), new DiagnosticBinningJobInfo("NCX_00020", "M", 50, 79),
+        // new DiagnosticBinningJobInfo("NCX_00020", "M", 55, 79), new DiagnosticBinningJobInfo("NCX_00029", "F", 53, 79),
+        // new DiagnosticBinningJobInfo("NCX_00029", "F", 55, 79), new DiagnosticBinningJobInfo("NCX_00172", "F", 53, 79),
+        // new DiagnosticBinningJobInfo("NCX_00172", "F", 51, 79), new DiagnosticBinningJobInfo("NCX_00172", "F", 49, 79),
+        // new DiagnosticBinningJobInfo("NCX_00172", "F", 50, 79), new DiagnosticBinningJobInfo("NCX_00172", "F", 55, 79),
+        // new DiagnosticBinningJobInfo("NCX_00082", "M", 53, 79), new DiagnosticBinningJobInfo("NCX_00082", "M", 51, 79),
+        // new DiagnosticBinningJobInfo("NCX_00082", "M", 49, 79), new DiagnosticBinningJobInfo("NCX_00082", "M", 55, 79),
+        // new DiagnosticBinningJobInfo("NCX_00186", "F", 53, 79));
+
+        List<DiagnosticBinningJobInfo> jobs = Arrays.asList(new DiagnosticBinningJobInfo("NCX_00159", "M", 50, 79),
+                new DiagnosticBinningJobInfo("NCX_00159", "M", 55, 79), new DiagnosticBinningJobInfo("NCX_00074", "F", 49, 79));
 
         // DiagnosticBinningJobInfo info = new DiagnosticBinningJobInfo("NCX_00002", "F", 53, 76);
         // Response response = client.path("submit").post(info);
